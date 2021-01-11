@@ -3,13 +3,13 @@ package de.erdbeerbaerlp.curseforgeBot;
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.ranktw.DiscordWebHooks.DiscordWebhook;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class CurseforgeUpdateThread extends Thread {
+public class CurseforgeUpdateThread extends TimerTask {
 	private final CurseProject proj;
 	private final DiscordWebhook webhook;
 	private String roleID = "";
@@ -25,8 +25,9 @@ public class CurseforgeUpdateThread extends Thread {
 		final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ]));
 		if (!project.isPresent()) throw new CurseException("Project not found");
 		proj = project.get();
-		setName("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
-		Main.threads.add(this);
+		final Timer timer = new Timer("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
+		timer.scheduleAtFixedRate(this, 60,30);
+		Main.threads.add(timer);
 	}
 
 	@Override

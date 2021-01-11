@@ -12,8 +12,7 @@ public class Main {
 	public static final Cfg cfg = new Cfg();
 	static final Map<String, Integer> cache = new HashMap<>();
 	static final int CFG_VERSION = 4;
-	static GitHub github;
-	static ArrayList<CurseforgeUpdateThread> threads = new ArrayList<>();
+	static ArrayList<Timer> threads = new ArrayList<>();
 	static boolean cacheGenerated = Cfg.cacheFile.exists();
 	static boolean debug = false;
 	static boolean cacheChanged;
@@ -44,7 +43,8 @@ public class Main {
 			} else cfg.loadCache();
 			for (String p : cfg.IDs) {
 				try {
-					new CurseforgeUpdateThread(p).start();
+					final CurseforgeUpdateThread curseforgeUpdateThread = new CurseforgeUpdateThread(p);
+					curseforgeUpdateThread.run();
 				} catch (CurseException e) {
 					e.printStackTrace();
 				}
