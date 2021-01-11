@@ -10,49 +10,49 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 public class CurseforgeUpdateThread extends Thread {
-    private final CurseProject proj;
-    private final String channelID;
-    private String roleID = "";
+	private final CurseProject proj;
+	private final String channelID;
+	private String roleID = "";
 
-    CurseforgeUpdateThread(String id) throws CurseException {
-        if (id.contains(";;")) {
-            String[] ids = id.split(";;");
-            channelID = ids[1];
-            if (ids.length == 3) {
-                System.out.println(ids.length);
-                roleID = ids[2];
-            }
-        } else {
-            roleID = Main.cfg.mentionRole;
-            channelID = Main.cfg.DefaultChannel;
-        }
-        final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(id.split(";;")[0]));
-        if (!project.isPresent()) throw new CurseException("Project not found");
-        proj = project.get();
-        setName("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
-        Main.threads.add(this);
-    }
+	CurseforgeUpdateThread(String id) throws CurseException {
+		if (id.contains(";;")) {
+			String[] ids = id.split(";;");
+			channelID = ids[ 1 ];
+			if (ids.length == 3) {
+				System.out.println(ids.length);
+				roleID = ids[ 2 ];
+			}
+		} else {
+			roleID = Main.cfg.mentionRole;
+			channelID = Main.cfg.DefaultChannel;
+		}
+		final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ]));
+		if (!project.isPresent()) throw new CurseException("Project not found");
+		proj = project.get();
+		setName("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
+		Main.threads.add(this);
+	}
 
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
-                if (Main.cfg.isNewFile(proj.name(), proj.files().first().id())) {
-                    TextChannel channel = Main.jda.getTextChannelById(channelID);
-                    //noinspection ConstantConditions
-                    Role role = roleID.isEmpty() ? null : channel.getGuild().getRoleById(roleID);
-                    if (!(role == null)) {
-                        EmbedMessage.sendPingableUpdateNotification(role, channel, proj);
-                    } else EmbedMessage.sendUpdateNotification(channel, proj);
-                    Main.cache.put(proj.name(), proj.files().first().id());
-                    Main.cacheChanged = true;
-                }
-                sleep(TimeUnit.SECONDS.toMillis(10));
-                proj.refreshFiles();
-            } catch (InterruptedException | CurseException ignored) {
-                ignored.printStackTrace();
-            }
-        }
-    }
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
+				if (Main.cfg.isNewFile(proj.name(), proj.files().first().id())) {
+					TextChannel channel = Main.jda.getTextChannelById(channelID);
+					//noinspection ConstantConditions
+					Role role = roleID.isEmpty() ? null : channel.getGuild().getRoleById(roleID);
+					if (!(role == null)) {
+						EmbedMessage.sendPingableUpdateNotification(role, channel, proj);
+					} else EmbedMessage.sendUpdateNotification(channel, proj);
+					Main.cache.put(proj.name(), proj.files().first().id());
+					Main.cacheChanged = true;
+				}
+				sleep(TimeUnit.SECONDS.toMillis(10));
+				proj.refreshFiles();
+			} catch (InterruptedException | CurseException ignored) {
+				ignored.printStackTrace();
+			}
+		}
+	}
 }

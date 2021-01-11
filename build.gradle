@@ -19,20 +19,18 @@ dependencies {
     embed('net.dv8tion:JDA:4.2.0_192'){
         transitive = true
         exclude module: 'opus-java'
-
     }
     embed("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"){
         transitive = true
     }
     embed group: 'com.typesafe', name: 'config', version: '1.4.0'
-    embed 'es.nitaur.markdown:txtmark:0.16'
+    embed group: 'es.nitaur.markdown', name: 'txtmark', version: '0.16'
     embed group: 'commons-cli', name: 'commons-cli', version: '1.4'
     embed(group: 'org.kohsuke', name: 'github-api', version: '1.116'){
         exclude module: 'okhttp'
     }
 }
 jar {
-
     configurations.embed.each { dep ->
         from(project.zipTree(dep)) {
             exclude 'META-INF', 'META-INF/**'
