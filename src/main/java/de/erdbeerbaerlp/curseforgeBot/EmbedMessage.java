@@ -4,9 +4,11 @@ import com.github.rjeschke.txtmark.Processor;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.project.CurseProject;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.ranktw.DiscordWebHooks.DiscordEmbed;
+import net.ranktw.DiscordWebHooks.DiscordMessage;
+import net.ranktw.DiscordWebHooks.DiscordWebhook;
+import net.ranktw.DiscordWebHooks.embed.FieldEmbed;
+import net.ranktw.DiscordWebHooks.embed.ThumbnailEmbed;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -14,28 +16,29 @@ import java.util.stream.Stream;
 
 public class EmbedMessage {
 
+	private static final String ZERO_WIDTH_SPACE = "";
+
 	/**
 	 * Message without link.
 	 *
 	 * @param proj    the proj
 	 * @param file    the file
-	 * @param channel the channel
 	 * @throws CurseException the curse exception
 	 */
-	public static void messageWithoutLink(CurseProject proj, CurseFile file, TextChannel channel)
+	public static void messageWithoutLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
 			throws CurseException {
-		EmbedBuilder embed = new EmbedBuilder();
-		embed.setTitle(proj.name(), proj.url().toString());
-		embed.setThumbnail(proj.logo().thumbnailURL().toString());
-		embed.setDescription(getMessageDescription());
-		embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
+		DiscordEmbed embed = new DiscordEmbed.Builder().
+				withTitle(proj.name() + proj.url().toString()).
+				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
+				withDescription(getMessageDescription()).
+				withField(new FieldEmbed(ZERO_WIDTH_SPACE,
 				"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
 						+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-						+ getGameVersions(proj) + "`", false);
-		embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
+						+ getGameVersions(proj) + "`", false)).
+				withField(new FieldEmbed(ZERO_WIDTH_SPACE,
 				"**Changelog:** \n```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-				false);
-		channel.sendMessage(embed.build()).queue();
+				false)).build();
+		webhook.sendMessage(embed);
 	}
 
 	/**
@@ -43,24 +46,23 @@ public class EmbedMessage {
 	 *
 	 * @param proj    the proj
 	 * @param file    the file
-	 * @param channel the channel
 	 * @throws CurseException the curse exception
 	 */
-	public static void messageWithCurseLink(CurseProject proj, CurseFile file, TextChannel channel)
+	public static void messageWithCurseLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
 			throws CurseException {
-		EmbedBuilder embed = new EmbedBuilder();
-		embed.setTitle(proj.name(), proj.url().toString());
-		embed.setThumbnail(proj.logo().thumbnailURL().toString());
-		embed.setDescription(getMessageDescription());
-		embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
-				"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-						+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-						+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")",
-				false);
-		embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
-				"**Changelog:** \n```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-				false);
-		channel.sendMessage(embed.build()).queue();
+		DiscordEmbed embed = new DiscordEmbed.Builder().
+			withTitle(proj.name() + proj.url().toString()).
+			withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
+			withDescription(getMessageDescription()).
+			withField(new FieldEmbed(ZERO_WIDTH_SPACE,
+					"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+							+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
+							+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")",
+					false)).
+			withField(new FieldEmbed(ZERO_WIDTH_SPACE,
+					"**Changelog:** \n```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
+					false)).build();
+		webhook.sendMessage(embed);
 	}
 
 	/**
@@ -68,66 +70,57 @@ public class EmbedMessage {
 	 *
 	 * @param proj    the proj
 	 * @param file    the file
-	 * @param channel the channel
 	 * @throws CurseException the curse exception
 	 */
-	public static void messageWithDirectLink(CurseProject proj, CurseFile file, TextChannel channel)
+	public static void messageWithDirectLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
 			throws CurseException {
-		EmbedBuilder embed = new EmbedBuilder();
-		embed.setTitle(proj.name(), proj.url().toString());
-		embed.setThumbnail(proj.logo().thumbnailURL().toString());
-		embed.setDescription(getMessageDescription());
-		embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
-				"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-						+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-						+ getGameVersions(proj) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
-						+ ")", false);
-		embed.addField(EmbedBuilder.ZERO_WIDTH_SPACE,
-				"**Changelog:** \n```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-				false);
-		channel.sendMessage(embed.build()).queue();
+		DiscordEmbed embed = new DiscordEmbed.Builder().
+			withTitle(proj.name() + proj.url().toString()).
+			withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
+			withDescription(getMessageDescription()).
+			withField(new FieldEmbed(ZERO_WIDTH_SPACE,
+					"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+							+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
+							+ getGameVersions(proj) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
+							+ ")", false)).
+			withField(new FieldEmbed(ZERO_WIDTH_SPACE,
+					"**Changelog:** \n```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
+					false)).build();
+		webhook.sendMessage(embed);
 	}
 
 	/**
 	 * Send pingable update notification.
 	 *
 	 * @param role    the role
-	 * @param channel the channel
 	 * @param proj    the proj
+	 * @param webhook webhook to send
 	 * @throws CurseException the curse exception
 	 */
-	public static void sendPingableUpdateNotification(Role role, TextChannel channel, CurseProject proj)
+	public static void sendPingableUpdateNotification(String role, CurseProject proj, DiscordWebhook webhook)
 			throws CurseException {
-		if (Main.cfg.updateFileLink.equals("nolink")) {
-			channel.sendMessage(role.getAsMention()).queue();
-			EmbedMessage.messageWithoutLink(proj, proj.files().first(), channel);
-		}
-		if (Main.cfg.updateFileLink.equals("curse")) {
-			channel.sendMessage(role.getAsMention()).queue();
-			EmbedMessage.messageWithCurseLink(proj, proj.files().first(), channel);
-		}
-		if (Main.cfg.updateFileLink.equals("direct")) {
-			channel.sendMessage(role.getAsMention()).queue();
-			EmbedMessage.messageWithDirectLink(proj, proj.files().first(), channel);
-		}
+		webhook.sendMessage(new DiscordMessage(String.format("<@%s>", role)));
+		sendUpdateNotification(proj, webhook);
 	}
 
 	/**
 	 * Send update notification.
 	 *
-	 * @param channel the channel
 	 * @param proj    the proj
+	 * @param webhook webhook to send
 	 * @throws CurseException the curse exception
 	 */
-	public static void sendUpdateNotification(TextChannel channel, CurseProject proj) throws CurseException {
-		if (Main.cfg.updateFileLink.equals("nolink")) {
-			EmbedMessage.messageWithoutLink(proj, proj.files().first(), channel);
-		}
-		if (Main.cfg.updateFileLink.equals("curse")) {
-			EmbedMessage.messageWithCurseLink(proj, proj.files().first(), channel);
-		}
-		if (Main.cfg.updateFileLink.equals("direct")) {
-			EmbedMessage.messageWithDirectLink(proj, proj.files().first(), channel);
+	public static void sendUpdateNotification(CurseProject proj, DiscordWebhook webhook) throws CurseException {
+		switch (Main.cfg.updateFileLink) {
+			case "nolink":
+				EmbedMessage.messageWithoutLink(proj, proj.files().first(), webhook);
+				break;
+			case "curse":
+				EmbedMessage.messageWithCurseLink(proj, proj.files().first(), webhook);
+				break;
+			case "direct":
+				EmbedMessage.messageWithDirectLink(proj, proj.files().first(), webhook);
+				break;
 		}
 	}
 

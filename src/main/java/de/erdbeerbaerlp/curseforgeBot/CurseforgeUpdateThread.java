@@ -11,20 +11,16 @@ import java.util.concurrent.TimeUnit;
 
 public class CurseforgeUpdateThread extends Thread {
 	private final CurseProject proj;
-	private final String channelID;
+	private final DiscordWebhook webhook;
 	private String roleID = "";
 
 	CurseforgeUpdateThread(String id) throws CurseException {
-		if (id.contains(";;")) {
-			String[] ids = id.split(";;");
-			channelID = ids[ 1 ];
-			if (ids.length == 3) {
-				System.out.println(ids.length);
-				roleID = ids[ 2 ];
-			}
-		} else {
-			roleID = Main.cfg.mentionRole;
-			channelID = Main.cfg.DefaultChannel;
+		if (!id.contains(";;"))
+			throw new RuntimeException("Missed configuration");
+		String[] ids = id.split(";;");
+		webhook = new DiscordWebhook(ids[ 1 ], ids [ 2 ]);
+		if (ids.length == 4) {
+			roleID = ids[ 3 ];
 		}
 		final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ]));
 		if (!project.isPresent()) throw new CurseException("Project not found");
@@ -35,24 +31,16 @@ public class CurseforgeUpdateThread extends Thread {
 
 	@Override
 	public void run() {
-		while (true) {
-			try {
-				System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
-				if (Main.cfg.isNewFile(proj.name(), proj.files().first().id())) {
-					TextChannel channel = Main.jda.getTextChannelById(channelID);
-					//noinspection ConstantConditions
-					Role role = roleID.isEmpty() ? null : channel.getGuild().getRoleById(roleID);
-					if (!(role == null)) {
-						EmbedMessage.sendPingableUpdateNotification(role, channel, proj);
-					} else EmbedMessage.sendUpdateNotification(channel, proj);
-					Main.cache.put(proj.name(), proj.files().first().id());
-					Main.cacheChanged = true;
-				}
-				sleep(TimeUnit.SECONDS.toMillis(10));
-				proj.refreshFiles();
-			} catch (InterruptedException | CurseException ignored) {
-				ignored.printStackTrace();
+		try {
+			proj.refreshFiles();
+			System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
+			if (Main.cfg.isNewFile(proj.name(), proj.files().first().id())) {
+				EmbedMessage.sendPingableUpdateNotification(roleID, proj, webhook);
+				Main.cache.put(proj.name(), proj.files().first().id());
+				Main.cacheChanged = true;
 			}
+		} catch (CurseException exception) {
+			exception.printStackTrace();
 		}
 	}
 }
