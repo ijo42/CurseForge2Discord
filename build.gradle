@@ -16,19 +16,15 @@ configurations {
     compile.extendsFrom(embed)
 }
 dependencies {
-    embed('net.dv8tion:JDA:4.2.0_192'){
-        transitive = true
-        exclude module: 'opus-java'
-    }
     embed("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"){
         transitive = true
     }
-    embed group: 'com.typesafe', name: 'config', version: '1.4.0'
+    embed group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+    embed group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
+    embed group: 'com.google.code.gson', name:'gson', version: '2.8.6'
     embed group: 'es.nitaur.markdown', name: 'txtmark', version: '0.16'
     embed group: 'commons-cli', name: 'commons-cli', version: '1.4'
-    embed(group: 'org.kohsuke', name: 'github-api', version: '1.116'){
-        exclude module: 'okhttp'
-    }
+    embed group: 'com.typesafe', name: 'config', version: '1.4.0'
 }
 jar {
     configurations.embed.each { dep ->
