@@ -8,13 +8,14 @@ import net.ranktw.DiscordWebHooks.DiscordWebhook;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
-public class CurseforgeUpdateThread extends TimerTask {
+public class CurseForgeUpdateThread extends TimerTask {
 	private final CurseProject proj;
 	private final DiscordWebhook webhook;
 	private String roleID = "";
 
-	CurseforgeUpdateThread(String id) throws CurseException {
+	CurseForgeUpdateThread(String id) throws CurseException {
 		if (!id.contains(";;"))
 			throw new RuntimeException("Missed configuration");
 		String[] ids = id.split(";;");

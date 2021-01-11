@@ -9,16 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Locale;
 
 public class Cfg {
 	public static final File configFile = new File("bot.conf");
 	public static final File cacheFile = new File("Caches_DONT-DELETE");
 	private final Config conf;
 	public List<String> IDs;
-	public String DefaultChannel;
 	public String changlogDiscordFormat;
 	public String messageDescription;
-	public String updateFileLink;
+	public EmbedMessage.UpdateFileLinkMode updateFileLink;
 	public String mentionRole;
 
 	Cfg() {
@@ -64,12 +64,11 @@ public class Cfg {
 
 	public void loadConfig() {
 		IDs = conf.getStringList("ids");
-		DefaultChannel = conf.getString("DefaultChannelID");
 		changlogDiscordFormat = conf.getString("changelogDiscordFormat");
 		messageDescription = conf.getString("messageDescription");
-		updateFileLink = conf.getString("updateFileLink");
+		updateFileLink = EmbedMessage.UpdateFileLinkMode.valueOf(
+				conf.getString("updateFileLink").toUpperCase(Locale.US));
 		mentionRole = conf.getString("mentionRole");
-		//USERs = conf.getStringList("users");
 	}
 
 	void saveCache() {
