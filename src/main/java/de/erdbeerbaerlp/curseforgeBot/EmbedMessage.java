@@ -98,7 +98,8 @@ public class EmbedMessage {
 	 */
 	public static void sendPingableUpdateNotification(String role, CurseProject proj, DiscordWebhook webhook)
 			throws CurseException {
-		webhook.sendMessage(new DiscordMessage(String.format("<@%s>", role)));
+		if(!role.isEmpty())
+			webhook.sendMessage(new DiscordMessage(String.format("<@&%s>", role)));
 		sendUpdateNotification(proj, webhook);
 	}
 
