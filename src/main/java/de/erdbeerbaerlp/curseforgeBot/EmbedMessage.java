@@ -153,7 +153,7 @@ public class EmbedMessage {
 	private static String formatChangelog(String s) {
 		String string = Processor.process(s).replace("<br>", "\n").replace("&lt;", "<").replace("&gt;",
 				">").replaceAll("(?s)<[^>]*>(<[^>]*>)*", "");
-		string = string.replaceAll("https.*?\\s", "");
+		string = string.replaceAll("https.*?\\s", "").replaceAll("(\n+)", "\n");
 		String out = "";
 		int additionalLines = 0;
 		for (final String st : string.split("\n")) {
