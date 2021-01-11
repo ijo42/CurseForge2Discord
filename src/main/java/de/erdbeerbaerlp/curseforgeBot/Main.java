@@ -7,12 +7,13 @@ import com.therandomlabs.curseapi.project.CurseProject;
 import org.apache.commons.cli.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 	public static final Cfg cfg = new Cfg();
 	static final Map<String, Integer> cache = new HashMap<>();
 	static final int CFG_VERSION = 4;
-	static ArrayList<Timer> threads = new ArrayList<>();
+	static List<Timer> threads = new ArrayList<>();
 	static boolean cacheGenerated = Cfg.cacheFile.exists();
 	static boolean debug = false;
 	static boolean cacheChanged;
@@ -30,10 +31,8 @@ public class Main {
 				System.out.println("Generating cache...");
 				for (String p : cfg.IDs) {
 					try {
-						final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(p.split(";;")[ 0 ]));
-						if (!project.isPresent()) throw new CurseException("Project not found");
-						final CurseProject pr = project.get();
-						cache.put(pr.name(), pr.files().first().id());
+						CurseAPI.project(Integer.parseInt(p.split(";;")[ 0 ])).
+								ifPresent(Main::cacheAccept);
 					} catch (CurseException e) {
 						e.printStackTrace();
 					}
@@ -41,18 +40,26 @@ public class Main {
 				cfg.saveCache();
 				System.out.println("Done!");
 			} else cfg.loadCache();
-			for (String p : cfg.IDs) {
+			for (String p : cfg.IDs)
 				try {
-					final CurseforgeUpdateThread curseforgeUpdateThread = new CurseforgeUpdateThread(p);
-					curseforgeUpdateThread.run();
+					new CurseForgeUpdateThread(p).run();
 				} catch (CurseException e) {
 					e.printStackTrace();
 				}
-			}
-			new ChacheSaveThread().start();
+
+			new Timer(CacheSaveThread.class.getName()).
+					scheduleAtFixedRate(new CacheSaveThread(), TimeUnit.SECONDS.toMillis(60),
+							TimeUnit.SECONDS.toMillis(120));
 		} catch (ParseException exp) {
 			System.err.println(exp.getMessage());
 		}
 	}
 
+	private static void cacheAccept(CurseProject pr){
+		try {
+			cache.put(pr.name(), pr.files().first().id());
+		} catch (CurseException e) {
+			e.printStackTrace();
+		}
+	}
 }

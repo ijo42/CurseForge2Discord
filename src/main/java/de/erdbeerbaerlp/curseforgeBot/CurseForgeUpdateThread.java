@@ -26,7 +26,7 @@ public class CurseforgeUpdateThread extends TimerTask {
 		if (!project.isPresent()) throw new CurseException("Project not found");
 		proj = project.get();
 		final Timer timer = new Timer("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
-		timer.scheduleAtFixedRate(this, 60,30);
+		timer.scheduleAtFixedRate(this, TimeUnit.SECONDS.toMillis(60),TimeUnit.SECONDS.toMillis(30));
 		Main.threads.add(timer);
 	}
 
@@ -34,7 +34,10 @@ public class CurseforgeUpdateThread extends TimerTask {
 	public void run() {
 		try {
 			proj.refreshFiles();
-			System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
+			if(proj.files().isEmpty())
+				return;
+			if(Main.debug)
+				System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
 			if (Main.cfg.isNewFile(proj.name(), proj.files().first().id())) {
 				EmbedMessage.sendPingableUpdateNotification(roleID, proj, webhook);
 				Main.cache.put(proj.name(), proj.files().first().id());

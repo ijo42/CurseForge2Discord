@@ -59,11 +59,11 @@ public class DiscordMessage extends Payload {
 
         public Builder() {
             this.message = new DiscordMessage();
-            this.message.setEmbeds(new ArrayList<DiscordEmbed>());
+            this.message.setEmbeds(new ArrayList<>());
         }
         public Builder(String content) {
             this.message = new DiscordMessage(content);
-            this.message.setEmbeds(new ArrayList<DiscordEmbed>());
+            this.message.setEmbeds(new ArrayList<>());
         }
 
         public Builder withUsername(String username) {

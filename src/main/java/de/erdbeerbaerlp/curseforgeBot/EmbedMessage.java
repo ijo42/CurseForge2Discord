@@ -7,8 +7,7 @@ import com.therandomlabs.curseapi.project.CurseProject;
 import net.ranktw.DiscordWebHooks.DiscordEmbed;
 import net.ranktw.DiscordWebHooks.DiscordMessage;
 import net.ranktw.DiscordWebHooks.DiscordWebhook;
-import net.ranktw.DiscordWebHooks.embed.FieldEmbed;
-import net.ranktw.DiscordWebHooks.embed.ThumbnailEmbed;
+import net.ranktw.DiscordWebHooks.embed.*;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
@@ -112,16 +111,20 @@ public class EmbedMessage {
 	 */
 	public static void sendUpdateNotification(CurseProject proj, DiscordWebhook webhook) throws CurseException {
 		switch (Main.cfg.updateFileLink) {
-			case "nolink":
+			case NO_LINK:
 				EmbedMessage.messageWithoutLink(proj, proj.files().first(), webhook);
 				break;
-			case "curse":
+			case CURSE:
 				EmbedMessage.messageWithCurseLink(proj, proj.files().first(), webhook);
 				break;
-			case "direct":
+			case DIRECT:
 				EmbedMessage.messageWithDirectLink(proj, proj.files().first(), webhook);
 				break;
 		}
+	}
+
+	enum UpdateFileLinkMode {
+		NO_LINK, CURSE, DIRECT
 	}
 
 	/**
