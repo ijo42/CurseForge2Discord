@@ -3,7 +3,6 @@ package de.erdbeerbaerlp.curseforgeBot;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +16,7 @@ public class Cfg {
 	private final Config conf;
 	public List<String> IDs;
 	public String changlogDiscordFormat;
+	public String footerImage;
 	public String messageDescription;
 	public EmbedMessage.UpdateFileLinkMode updateFileLink;
 	public String mentionRole;
@@ -24,8 +24,7 @@ public class Cfg {
 	Cfg() {
 		if (!configFile.exists()) {
 			//noinspection finally
-			try {
-				InputStream link = (getClass().getResourceAsStream("/" + configFile.getName()));
+			try (InputStream link = getClass().getResourceAsStream("/" + configFile.getName())) {
 				Files.copy(link, configFile.getAbsoluteFile().toPath());
 				link.close();
 				System.err.println("Please set the token and the Channel ID in the new config file");
@@ -65,6 +64,7 @@ public class Cfg {
 	public void loadConfig() {
 		IDs = conf.getStringList("ids");
 		changlogDiscordFormat = conf.getString("changelogDiscordFormat");
+		footerImage = conf.getString("footerImage");
 		messageDescription = conf.getString("messageDescription");
 		updateFileLink = EmbedMessage.UpdateFileLinkMode.valueOf(
 				conf.getString("updateFileLink").toUpperCase(Locale.US));

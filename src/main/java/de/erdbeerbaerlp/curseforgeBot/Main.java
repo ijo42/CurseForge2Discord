@@ -1,7 +1,6 @@
 package de.erdbeerbaerlp.curseforgeBot;
 
 
-import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 import org.apache.commons.cli.*;
@@ -12,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 	public static final Cfg cfg = new Cfg();
 	static final Map<String, Integer> cache = new HashMap<>();
-	static final int CFG_VERSION = 4;
+	static final int CFG_VERSION = 5;
 	static List<Timer> threads = new ArrayList<>();
 	static boolean cacheGenerated = Cfg.cacheFile.exists();
 	static boolean debug = false;
