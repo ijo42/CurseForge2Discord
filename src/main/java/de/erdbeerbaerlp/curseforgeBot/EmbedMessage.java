@@ -1,15 +1,22 @@
 package de.erdbeerbaerlp.curseforgeBot;
 
-import com.github.rjeschke.txtmark.Processor;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
+import com.therandomlabs.curseapi.file.CurseReleaseType;
 import com.therandomlabs.curseapi.project.CurseProject;
 import net.ranktw.DiscordWebHooks.DiscordEmbed;
 import net.ranktw.DiscordWebHooks.DiscordMessage;
 import net.ranktw.DiscordWebHooks.DiscordWebhook;
-import net.ranktw.DiscordWebHooks.embed.*;
+import net.ranktw.DiscordWebHooks.embed.AuthorEmbed;
+import net.ranktw.DiscordWebHooks.embed.FieldEmbed;
+import net.ranktw.DiscordWebHooks.embed.FooterEmbed;
+import net.ranktw.DiscordWebHooks.embed.ThumbnailEmbed;
 
+import java.awt.*;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 
@@ -183,18 +190,26 @@ public class EmbedMessage {
 	 * @return the string
 	 */
 	private static String formatChangelog(String s) {
-		String string = Processor.process(s).replace("<br>", "\n").replace("&lt;", "<").replace("&gt;",
-				">").replaceAll("(?s)<[^>]*>(<[^>]*>)*", "");
-		string = string.replaceAll("https.*?\\s", "").replaceAll("(\n+)", "\n");
-		String out = "";
-		int additionalLines = 0;
-		for (final String st : string.split("\n")) {
-			if ((out + st.trim() + "\n").length() > 950) {
-				additionalLines++;
-			} else // noinspection StringConcatenationInLoop
-				out = out + st.trim() + "\n";
-		}
-		return out + (additionalLines > 0 ? ("... And " + additionalLines + " more lines") : "");
+		final String proceed =
+				Pattern.compile("^[\\W\\n]+$|( {2,})|https.*?\\s", Pattern.MULTILINE).matcher(s).
+						replaceAll("").
+						replaceAll("\n+", "\n");
+		final StringBuilder out = new StringBuilder();
+		final AtomicBoolean isLocked = new AtomicBoolean(false);
+		Arrays.stream(proceed.split("\n")).mapToInt(x -> {
+			if ((out + x + '\n').length() > 950 || isLocked.get()) {
+				isLocked.set(true);
+				return 1;
+			} else
+				out.append(x).append('\n');
+			return 0;
+		}).reduce(Integer::sum).ifPresent(
+				additionalLines -> {
+					if (additionalLines > 0)
+						out.append("... And ").append(additionalLines).append(" more lines");
+				});
+
+		return out.toString();
 	}
 
 	/**
@@ -204,17 +219,16 @@ public class EmbedMessage {
 	 * @return the game versions
 	 * @throws CurseException the curse exception
 	 */
-	@SuppressWarnings("StringConcatenationInLoop")
 	private static String getGameVersions(final CurseProject proj) throws CurseException {
 		if (proj.files().first().gameVersionStrings().isEmpty())
 			return "UNKNOWN";
-		String out = "";
+		StringBuilder out = new StringBuilder();
 		final Stream<String> stream = proj.files().first().gameVersionStrings().stream().sorted();
 		for (Iterator<String> it = stream.iterator(); it.hasNext(); ) {
 			final String s = it.next();
-			out = out + s + (it.hasNext() ? ", " : "");
+			out.append(s).append(it.hasNext() ? ", " : "");
 		}
-		return out;
+		return out.toString();
 	}
 
 	/**
