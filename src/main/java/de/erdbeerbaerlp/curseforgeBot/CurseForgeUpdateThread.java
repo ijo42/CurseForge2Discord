@@ -5,7 +5,6 @@ import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
 import net.ranktw.DiscordWebHooks.DiscordWebhook;
 
-import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -28,11 +27,9 @@ public class CurseForgeUpdateThread extends TimerTask {
 		webhook = new DiscordWebhook(ids[ 1 ], ids[ 2 ]);
 		if (ids.length == 4)
 			roleID = ids[ 3 ];
-
-		final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ]));
-		if (!project.isPresent()) throw new CurseException("Project not found");
-		this.proj = project.get();
-		final Timer timer = new Timer("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
+		this.proj = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ])).
+				orElseThrow(() -> new CurseException("Project not found"));
+		final Timer timer = new Timer("CurseForge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
 		timer.scheduleAtFixedRate(this, TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(30));
 		starter.threads.add(timer);
 	}
