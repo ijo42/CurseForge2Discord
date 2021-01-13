@@ -22,69 +22,16 @@ import java.util.stream.Stream;
 
 public class EmbedMessage {
 
-	private static final String ZERO_WIDTH_SPACE = "";
 	private final static Color
 			release = new Color(20, 184, 102),
 			beta = new Color(14, 155, 216),
 			alpha = new Color(211, 202, 232);
+	private final Config config;
+	private final String syntax;
 
-	/**
-	 * Message without link.
-	 *
-	 * @param proj the proj
-	 * @param file the file
-	 * @throws CurseException the curse exception
-	 */
-	public static void messageWithoutLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
-			throws CurseException {
-		final DiscordEmbed embed = new DiscordEmbed.Builder().
-				withAuthor(new AuthorEmbed(proj.name(), proj.url().toString())).
-				withColor(getColorFromReleaseType(file.releaseType())).
-				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
-				withFooter(new FooterEmbed("Update now!", Main.cfg.footerImage)).
-				withField(new FieldEmbed("Build",
-						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`", false)).
-				withField(new FieldEmbed("Changelog:",
-						"```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-						false)).build();
-		final DiscordMessage build = new DiscordMessage.Builder().
-				withContent(getMessageDescription()).
-				withUsername("Update Detector").
-				withEmbed(embed).
-				build();
-		webhook.sendMessage(build);
-	}
-
-	/**
-	 * Message with curse link.
-	 *
-	 * @param proj the proj
-	 * @param file the file
-	 * @throws CurseException the curse exception
-	 */
-	public static void messageWithCurseLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
-			throws CurseException {
-		final DiscordEmbed embed = new DiscordEmbed.Builder().
-				withAuthor(new AuthorEmbed(proj.name(), proj.url().toString())).
-				withColor(getColorFromReleaseType(file.releaseType())).
-				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
-				withFooter(new FooterEmbed("Update now!", Main.cfg.footerImage)).
-				withField(new FieldEmbed("Build",
-						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")",
-						false)).
-				withField(new FieldEmbed("Changelog:",
-						"```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-						false)).build();
-		final DiscordMessage build = new DiscordMessage.Builder().
-				withContent(getMessageDescription()).
-				withUsername("Update Detector").
-				withEmbed(embed).
-				build();
-		webhook.sendMessage(build);
+	public EmbedMessage(Config config) {
+		this.config = config;
+		this.syntax = getSyntax(this.config.changlogDiscordFormat);
 	}
 
 	private static Color getColorFromReleaseType(CurseReleaseType releaseType) {
@@ -97,89 +44,6 @@ public class EmbedMessage {
 				return alpha;
 			default:
 				throw new IllegalStateException("Unexpected value: " + releaseType);
-		}
-	}
-
-	/**
-	 * Message with direct link.
-	 *
-	 * @param proj the proj
-	 * @param file the file
-	 * @throws CurseException the curse exception
-	 */
-	public static void messageWithDirectLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
-			throws CurseException {
-		final DiscordEmbed embed = new DiscordEmbed.Builder().
-				withAuthor(new AuthorEmbed(proj.name(), proj.url().toString())).
-				withColor(getColorFromReleaseType(file.releaseType())).
-				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
-				withFooter(new FooterEmbed("Update now!", Main.cfg.footerImage)).
-				withField(new FieldEmbed("Build",
-						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
-								+ ")", false)).
-				withField(new FieldEmbed("Changelog:",
-						"```" + getSyntax() + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-						false)).build();
-		final DiscordMessage build = new DiscordMessage.Builder().
-				withContent(getMessageDescription()).
-				withUsername("Update Detector").
-				withEmbed(embed).
-				build();
-		webhook.sendMessage(build);
-	}
-
-	/**
-	 * Send pingable update notification.
-	 *
-	 * @param role    the role
-	 * @param proj    the proj
-	 * @param webhook webhook to send
-	 * @throws CurseException the curse exception
-	 */
-	public static void sendPingableUpdateNotification(String role, CurseProject proj, DiscordWebhook webhook)
-			throws CurseException {
-		if (!role.isEmpty())
-			webhook.sendMessage(new DiscordMessage(String.format("<@&%s>", role)));
-		sendUpdateNotification(proj, webhook);
-	}
-
-	/**
-	 * Send update notification.
-	 *
-	 * @param proj    the proj
-	 * @param webhook webhook to send
-	 * @throws CurseException the curse exception
-	 */
-	public static void sendUpdateNotification(CurseProject proj, DiscordWebhook webhook) throws CurseException {
-		switch (Main.cfg.updateFileLink) {
-			case NO_LINK:
-				EmbedMessage.messageWithoutLink(proj, proj.files().first(), webhook);
-				break;
-			case CURSE:
-				EmbedMessage.messageWithCurseLink(proj, proj.files().first(), webhook);
-				break;
-			case DIRECT:
-				EmbedMessage.messageWithDirectLink(proj, proj.files().first(), webhook);
-				break;
-		}
-	}
-
-	/**
-	 * Returns the custom message description set in bot.conf Description will be
-	 * set to default description if over 500 characters
-	 *
-	 * @return description
-	 */
-	private static String getMessageDescription() {
-		String desc = Main.cfg.messageDescription;
-		if (desc.length() > 500) {
-			System.out.println(
-					"Your messageDescription is over 500 characters, setting to default value **PLEASE CHANGE THIS**");
-			return "New File detected For CurseForge Project";
-		} else {
-			return desc;
 		}
 	}
 
@@ -240,8 +104,7 @@ public class EmbedMessage {
 	 *
 	 * @return discord code syntax
 	 */
-	private static String getSyntax() {
-		String md = Main.cfg.changlogDiscordFormat;
+	private static String getSyntax(String md) {
 		if (!(md.equals("Syntax"))) {
 			return md + "\n";
 		} else {
@@ -260,6 +123,148 @@ public class EmbedMessage {
 		String urlPre = proj.url().toString();
 		int id = proj.files().first().id();
 		return urlPre + "/files/" + id;
+	}
+
+	/**
+	 * Message without link.
+	 *
+	 * @param proj the proj
+	 * @param file the file
+	 * @throws CurseException the curse exception
+	 */
+	public void messageWithoutLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
+			throws CurseException {
+		final DiscordEmbed embed = new DiscordEmbed.Builder().
+				withAuthor(new AuthorEmbed(proj.name(), proj.url().toString())).
+				withColor(getColorFromReleaseType(file.releaseType())).
+				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
+				withFooter(new FooterEmbed("Update now!", this.config.footerImage)).
+				withField(new FieldEmbed("Build",
+						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
+								+ getGameVersions(proj) + "`", false)).
+				withField(new FieldEmbed("Changelog:",
+						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
+						false)).build();
+		final DiscordMessage build = new DiscordMessage.Builder().
+				withContent(getMessageDescription()).
+				withUsername("Update Detector").
+				withEmbed(embed).
+				build();
+		webhook.sendMessage(build);
+	}
+
+	/**
+	 * Message with curse link.
+	 *
+	 * @param proj the proj
+	 * @param file the file
+	 * @throws CurseException the curse exception
+	 */
+	public void messageWithCurseLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
+			throws CurseException {
+		final DiscordEmbed embed = new DiscordEmbed.Builder().
+				withAuthor(new AuthorEmbed(proj.name(), proj.url().toString())).
+				withColor(getColorFromReleaseType(file.releaseType())).
+				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
+				withFooter(new FooterEmbed("Update now!", this.config.footerImage)).
+				withField(new FieldEmbed("Build",
+						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
+								+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")",
+						false)).
+				withField(new FieldEmbed("Changelog:",
+						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
+						false)).build();
+		final DiscordMessage build = new DiscordMessage.Builder().
+				withContent(getMessageDescription()).
+				withUsername("Update Detector").
+				withEmbed(embed).
+				build();
+		webhook.sendMessage(build);
+	}
+
+	/**
+	 * Message with direct link.
+	 *
+	 * @param proj the proj
+	 * @param file the file
+	 * @throws CurseException the curse exception
+	 */
+	public void messageWithDirectLink(CurseProject proj, CurseFile file, DiscordWebhook webhook)
+			throws CurseException {
+		final DiscordEmbed embed = new DiscordEmbed.Builder().
+				withAuthor(new AuthorEmbed(proj.name(), proj.url().toString())).
+				withColor(getColorFromReleaseType(file.releaseType())).
+				withThumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), 80, 80)).
+				withFooter(new FooterEmbed("Update now!", this.config.footerImage)).
+				withField(new FieldEmbed("Build",
+						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
+								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
+								+ getGameVersions(proj) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
+								+ ")", false)).
+				withField(new FieldEmbed("Changelog:",
+						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
+						false)).build();
+		final DiscordMessage build = new DiscordMessage.Builder().
+				withContent(getMessageDescription()).
+				withUsername("Update Detector").
+				withEmbed(embed).
+				build();
+		webhook.sendMessage(build);
+	}
+
+	/**
+	 * Send pingable update notification.
+	 *
+	 * @param role    the role
+	 * @param proj    the proj
+	 * @param webhook webhook to send
+	 * @throws CurseException the curse exception
+	 */
+	public void sendPingableUpdateNotification(String role, CurseProject proj, DiscordWebhook webhook)
+			throws CurseException {
+		if (!role.isEmpty())
+			webhook.sendMessage(new DiscordMessage(String.format("<@&%s>", role)));
+		sendUpdateNotification(proj, webhook);
+	}
+
+	/**
+	 * Send update notification.
+	 *
+	 * @param proj    the proj
+	 * @param webhook webhook to send
+	 * @throws CurseException the curse exception
+	 */
+	public void sendUpdateNotification(CurseProject proj, DiscordWebhook webhook) throws CurseException {
+		switch (this.config.updateFileLink) {
+			case NO_LINK:
+				messageWithoutLink(proj, proj.files().first(), webhook);
+				break;
+			case CURSE:
+				messageWithCurseLink(proj, proj.files().first(), webhook);
+				break;
+			case DIRECT:
+				messageWithDirectLink(proj, proj.files().first(), webhook);
+				break;
+		}
+	}
+
+	/**
+	 * Returns the custom message description set in bot.conf Description will be
+	 * set to default description if over 500 characters
+	 *
+	 * @return description
+	 */
+	private String getMessageDescription() {
+		String desc = this.config.messageDescription;
+		if (desc.length() > 500) {
+			System.out.println(
+					"Your messageDescription is over 500 characters, setting to default value **PLEASE CHANGE THIS**");
+			return "New File detected For CurseForge Project";
+		} else {
+			return desc;
+		}
 	}
 
 	enum UpdateFileLinkMode {

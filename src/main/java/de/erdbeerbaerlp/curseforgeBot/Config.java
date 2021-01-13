@@ -1,6 +1,5 @@
 package de.erdbeerbaerlp.curseforgeBot;
 
-import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
 import java.io.*;
@@ -9,22 +8,28 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-public class Cfg {
-	public static final File configFile = new File("bot.conf");
-	public static final File cacheFile = new File("Caches_DONT-DELETE");
-	private final Config conf;
+public class Config {
+	private final static String configFileName = "bot.conf";
+	private final static String cacheFileName = "Caches_DONT-DELETE";
+	public final File cacheFile;
+	private final com.typesafe.config.Config conf;
 	public List<String> IDs;
+	public Map<String, Integer> cache;
 	public String changlogDiscordFormat;
 	public String footerImage;
 	public String messageDescription;
 	public EmbedMessage.UpdateFileLinkMode updateFileLink;
 	public String mentionRole;
 
-	Cfg() {
+	public Config(String filePath, Map<String, Integer> cache) {
+		File configFile = new File(filePath + configFileName);
+		this.cacheFile = new File(filePath + cacheFileName);
+		this.cache = cache;
 		if (!configFile.exists()) {
 			//noinspection finally
-			try (InputStream link = getClass().getResourceAsStream("/" + configFile.getName())) {
+			try (InputStream link = getClass().getResourceAsStream("/" + configFileName)) {
 				Files.copy(link, configFile.getAbsoluteFile().toPath());
 				link.close();
 				System.err.println("Please set the token and the Channel ID in the new config file");
@@ -36,8 +41,8 @@ public class Cfg {
 			}
 		}
 
-		conf = ConfigFactory.parseFile(configFile);
-		if (!conf.hasPath("ver") || conf.getInt("ver") != Main.CFG_VERSION) {
+		this.conf = ConfigFactory.parseFile(configFile);
+		if (!this.conf.hasPath("ver") || this.conf.getInt("ver") != BotStarter.CFG_VERSION) {
 			//noinspection finally
 			try {
 				System.out.println("Resetting config, creating backup...");
@@ -47,7 +52,7 @@ public class Cfg {
 					backupPath.toFile().delete();
 				}
 				Files.move(configFile.toPath(), backupPath);
-				InputStream link = (getClass().getResourceAsStream("/" + configFile.getName()));
+				InputStream link = getClass().getResourceAsStream("/" + configFile.getName());
 				Files.copy(link, configFile.getAbsoluteFile().toPath());
 				link.close();
 				System.err.println("Reset completed! Please reconfigurate.");
@@ -77,7 +82,7 @@ public class Cfg {
 			if (!cacheFile.exists()) //noinspection ResultOfMethodCallIgnored
 				cacheFile.createNewFile();
 			final PrintWriter out = new PrintWriter(cacheFile);
-			Main.cache.forEach((a, b) -> out.println(a + ";;" + b));
+			cache.forEach((a, b) -> out.println(a + ";;" + b));
 			out.close();
 		} catch (IOException e) {
 			System.err.println("Failed to save cache file!+\n" + e.getMessage());
@@ -100,12 +105,11 @@ public class Cfg {
 			System.err.println("Could not load cache line " + s);
 			return;
 		}
-		Main.cache.put(ca[ 0 ], Integer.parseInt(ca[ 1 ]));
-
+		cache.put(ca[ 0 ], Integer.parseInt(ca[ 1 ]));
 	}
 
-	boolean isNewFile(String name, int id) {
-		if (!Main.cache.containsKey(name)) return true;
-		return Main.cache.get(name) < id;
+	public boolean isNewFile(String name, int id) {
+		if (!cache.containsKey(name)) return true;
+		return cache.get(name) < id;
 	}
 }

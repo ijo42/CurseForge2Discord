@@ -13,36 +13,42 @@ import java.util.concurrent.TimeUnit;
 public class CurseForgeUpdateThread extends TimerTask {
 	private final CurseProject proj;
 	private final DiscordWebhook webhook;
+	private final BotStarter starter = BotStarter.getInstance();
+	private final EmbedMessage embedMessage;
+	private final Config config;
+	private final boolean debug = starter.debug;
 	private String roleID = "";
 
-	CurseForgeUpdateThread(String id) throws CurseException {
+	public CurseForgeUpdateThread(String id, EmbedMessage embedMessage, Config config) throws CurseException {
+		this.config = config;
 		if (!id.contains(";;"))
 			throw new RuntimeException("Missed configuration");
+		this.embedMessage = embedMessage;
 		String[] ids = id.split(";;");
-		webhook = new DiscordWebhook(ids[ 1 ], ids [ 2 ]);
-		if (ids.length == 4) {
+		webhook = new DiscordWebhook(ids[ 1 ], ids[ 2 ]);
+		if (ids.length == 4)
 			roleID = ids[ 3 ];
-		}
+
 		final Optional<CurseProject> project = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ]));
 		if (!project.isPresent()) throw new CurseException("Project not found");
-		proj = project.get();
+		this.proj = project.get();
 		final Timer timer = new Timer("Curseforge Update Detector for " + proj.name() + " (ID: " + proj.id() + ")");
-		timer.scheduleAtFixedRate(this, TimeUnit.SECONDS.toMillis(60),TimeUnit.SECONDS.toMillis(30));
-		Main.threads.add(timer);
+		timer.scheduleAtFixedRate(this, TimeUnit.SECONDS.toMillis(60), TimeUnit.SECONDS.toMillis(30));
+		starter.threads.add(timer);
 	}
 
 	@Override
 	public void run() {
 		try {
 			proj.refreshFiles();
-			if(proj.files().isEmpty())
+			if (proj.files().isEmpty())
 				return;
-			if(Main.debug)
-				System.out.println("<" + proj.name() + "> Cached: " + Main.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
-			if (Main.cfg.isNewFile(proj.name(), proj.files().first().id())) {
-				EmbedMessage.sendPingableUpdateNotification(roleID, proj, webhook);
-				Main.cache.put(proj.name(), proj.files().first().id());
-				Main.cacheChanged = true;
+			if (debug)
+				System.out.println("<" + proj.name() + "> Cached: " + starter.cache.get(proj.name()) + " Newest:" + proj.files().first().id());
+			if (config.isNewFile(proj.name(), proj.files().first().id())) {
+				embedMessage.sendPingableUpdateNotification(roleID, proj, webhook);
+				starter.cache.put(proj.name(), proj.files().first().id());
+				starter.cacheChanged = true;
 			}
 		} catch (CurseException exception) {
 			exception.printStackTrace();
