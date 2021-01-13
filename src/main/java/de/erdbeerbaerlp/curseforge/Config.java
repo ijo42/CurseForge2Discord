@@ -1,4 +1,4 @@
-package de.erdbeerbaerlp.curseforgeBot;
+package de.erdbeerbaerlp.curseforge;
 
 import com.typesafe.config.ConfigFactory;
 
@@ -42,7 +42,7 @@ public class Config {
 		}
 
 		this.conf = ConfigFactory.parseFile(configFile);
-		if (!this.conf.hasPath("ver") || this.conf.getInt("ver") != BotStarter.CFG_VERSION) {
+		if (!this.conf.hasPath("ver") || this.conf.getInt("ver") != Starter.CFG_VERSION) {
 			//noinspection finally
 			try {
 				System.out.println("Resetting config, creating backup...");

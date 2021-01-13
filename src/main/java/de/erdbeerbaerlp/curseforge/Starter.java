@@ -1,4 +1,4 @@
-package de.erdbeerbaerlp.curseforgeBot;
+package de.erdbeerbaerlp.curseforge;
 
 
 import com.therandomlabs.curseapi.CurseAPI;
@@ -8,9 +8,9 @@ import org.apache.commons.cli.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class BotStarter {
+public class Starter {
 	public static final int CFG_VERSION = 5;
-	private static BotStarter instance;
+	private static Starter instance;
 	public final Map<String, Integer> cache = new HashMap<>();
 	public final List<Timer> threads = new ArrayList<>();
 	public final boolean cacheGenerated;
@@ -18,7 +18,7 @@ public class BotStarter {
 	private final Config config;
 	public boolean cacheChanged;
 
-	public BotStarter(boolean debug, String path) {
+	public Starter(boolean debug, String path) {
 		instance = this;
 		this.debug = debug;
 		this.config = new Config(path, this.cache);
@@ -55,7 +55,7 @@ public class BotStarter {
 						TimeUnit.SECONDS.toMillis(120));
 	}
 
-	public static BotStarter getInstance() {
+	public static Starter getInstance() {
 		return instance;
 	}
 
@@ -69,7 +69,7 @@ public class BotStarter {
 			CommandLine line = parser.parse(o, args);
 			boolean debug = line.hasOption("debug");
 			String path = line.getOptionValue("path", "");
-			new BotStarter(debug, path);
+			new Starter(debug, path);
 		} catch (ParseException exp) {
 			System.err.println(exp.getMessage());
 		}

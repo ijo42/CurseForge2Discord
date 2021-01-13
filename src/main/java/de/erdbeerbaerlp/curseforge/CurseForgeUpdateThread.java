@@ -1,4 +1,4 @@
-package de.erdbeerbaerlp.curseforgeBot;
+package de.erdbeerbaerlp.curseforge;
 
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class CurseForgeUpdateThread extends TimerTask {
 	private final CurseProject proj;
 	private final DiscordWebhook webhook;
-	private final BotStarter starter = BotStarter.getInstance();
+	private final Starter starter = Starter.getInstance();
 	private final EmbedMessage embedMessage;
 	private final Config config;
 	private final boolean debug = starter.debug;

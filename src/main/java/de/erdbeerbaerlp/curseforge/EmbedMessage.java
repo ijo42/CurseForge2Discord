@@ -1,4 +1,4 @@
-package de.erdbeerbaerlp.curseforgeBot;
+package de.erdbeerbaerlp.curseforge;
 
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
