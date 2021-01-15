@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Starter {
 	public static final int CFG_VERSION = 5;
+	public static final String PATH_PARAM = "path";
+	public static final String DEBUG_PARAM = "debug";
 	private static Starter instance;
 	public final Map<String, Integer> cache = new HashMap<>();
 	public final List<Timer> threads = new ArrayList<>();
@@ -61,14 +63,16 @@ public class Starter {
 
 	public static void main(String[] args) {
 		final Options o = new Options();
-		o.addOption("debug", false, "Enables debug log");
-		o.addOption("path", true, "Where stores config and cache files");
+		o.addOption(DEBUG_PARAM, false, "Enables debug log");
+		o.addOption(PATH_PARAM, true, "Where stores config and cache files");
 		CommandLineParser parser = new DefaultParser();
 		try {
 			// parse the command line arguments
 			CommandLine line = parser.parse(o, args);
-			boolean debug = line.hasOption("debug");
-			String path = line.getOptionValue("path", "");
+			boolean debug = line.hasOption(DEBUG_PARAM);
+			String path = line.getOptionValue(PATH_PARAM, "");
+			if ((path.isEmpty() || path.isBlank()) && System.getenv("CONFIG_PATH") != null)
+				path = System.getenv(PATH_PARAM);
 			new Starter(debug, path);
 		} catch (ParseException exp) {
 			System.err.println(exp.getMessage());
