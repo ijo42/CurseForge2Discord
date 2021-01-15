@@ -4,16 +4,17 @@ import com.github.kevinsawicki.http.HttpRequest;
 import com.google.gson.Gson;
 import net.ranktw.DiscordWebHooks.connection.Response;
 import net.ranktw.DiscordWebHooks.connection.WebhookException;
-import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.config.ConnectionConfig;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.File;
@@ -53,22 +54,21 @@ public class DiscordWebhook {
     public void sendMessage(File... files) {
         new Thread(() -> {
             FileInputStream fis = null;
-            try {
-                DefaultHttpClient httpclient = new DefaultHttpClient(new BasicHttpParams());
+            try (CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultConnectionConfig(ConnectionConfig.DEFAULT).build()) {
 
                 // server back-end URL
                 HttpPost httppost = new HttpPost(webhook);
-                MultipartEntityBuilder builder =  MultipartEntityBuilder.create();
+                MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 // set the file input stream and file name as arguments
                 for (int i = 0; i < files.length; i++) {
-                    File inFile = files[i];
+                    File inFile = files[ i ];
                     fis = new FileInputStream(inFile);
-                    builder.addPart("file"+i, new InputStreamBody(fis, inFile.getName()));
+                    builder.addPart("file" + i, new InputStreamBody(fis, inFile.getName()));
                 }
-                builder.addPart("payload_json", new StringBody("{\"content\": \"<@&533839633537171487>\"}", Consts.UTF_8));
+                builder.addPart("payload_json", new StringBody("{\"content\": \"<@&533839633537171487>\"}", ContentType.TEXT_PLAIN));
                 httppost.setEntity(builder.build());
                 // execute the request
-                HttpResponse response = httpclient.execute(httppost);
+                HttpResponse response = httpClient.execute(httppost);
 
                 int statusCode = response.getStatusLine().getStatusCode();
                 HttpEntity responseEntity = response.getEntity();
@@ -92,22 +92,20 @@ public class DiscordWebhook {
     public void sendMessage(Payload dm,File... files) {
         new Thread(() -> {
             FileInputStream fis = null;
-            try {
-                DefaultHttpClient httpclient = new DefaultHttpClient(new BasicHttpParams());
-
+            try (final CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultConnectionConfig(ConnectionConfig.DEFAULT).build()) {
                 // server back-end URL
                 HttpPost httppost = new HttpPost(webhook);
-                MultipartEntityBuilder builder =  MultipartEntityBuilder.create();
+                MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 // set the file input stream and file name as arguments
                 for (int i = 0; i < files.length; i++) {
-                    File inFile = files[i];
+                    File inFile = files[ i ];
                     fis = new FileInputStream(inFile);
-                    builder.addPart("file"+i, new InputStreamBody(fis, inFile.getName()));
+                    builder.addPart("file" + i, new InputStreamBody(fis, inFile.getName()));
                 }
-                builder.addPart("payload_json", new StringBody(gson.toJson(dm), Consts.UTF_8));
+                builder.addPart("payload_json", new StringBody(gson.toJson(dm), ContentType.DEFAULT_TEXT));
                 httppost.setEntity(builder.build());
                 // execute the request
-                HttpResponse response = httpclient.execute(httppost);
+                HttpResponse response = httpClient.execute(httppost);
 
                 int statusCode = response.getStatusLine().getStatusCode();
                 HttpEntity responseEntity = response.getEntity();
