@@ -1,6 +1,9 @@
-name: push
+name: Release Workflow
 on:
   push:
+    paths-ignore:
+    - '**.md'
+    - '.git**'
   create:
     tags:
       - v*
