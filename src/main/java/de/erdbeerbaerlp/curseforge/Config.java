@@ -17,7 +17,7 @@ public class Config {
 	private final com.typesafe.config.Config conf;
 	public List<String> IDs;
 	public Map<String, Integer> cache;
-	public String changlogDiscordFormat;
+	public String changelogDiscordFormat;
 	public String footerImage;
 	public String messageDescription;
 	public EmbedMessage.UpdateFileLinkMode updateFileLink;
@@ -68,7 +68,7 @@ public class Config {
 
 	public void loadConfig() {
 		IDs = conf.getStringList("ids");
-		changlogDiscordFormat = conf.getString("changelogDiscordFormat");
+		changelogDiscordFormat = conf.getString("changelogDiscordFormat");
 		footerImage = conf.getString("footerImage");
 		messageDescription = conf.getString("messageDescription");
 		updateFileLink = EmbedMessage.UpdateFileLinkMode.valueOf(

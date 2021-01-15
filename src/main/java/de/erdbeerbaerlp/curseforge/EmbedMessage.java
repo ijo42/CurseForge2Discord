@@ -31,7 +31,7 @@ public class EmbedMessage {
 
 	public EmbedMessage(Config config) {
 		this.config = config;
-		this.syntax = getSyntax(this.config.changlogDiscordFormat);
+		this.syntax = getSyntax(this.config.changelogDiscordFormat);
 	}
 
 	private static Color getColorFromReleaseType(CurseReleaseType releaseType) {
