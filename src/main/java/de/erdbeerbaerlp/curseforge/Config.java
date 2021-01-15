@@ -24,8 +24,8 @@ public class Config {
 	public String mentionRole;
 
 	public Config(String filePath, Map<String, Integer> cache) {
-		File configFile = new File(filePath + configFileName);
-		this.cacheFile = new File(filePath + cacheFileName);
+		File configFile = new File(filePath + File.pathSeparator + configFileName);
+		this.cacheFile = new File(filePath + File.pathSeparator + cacheFileName);
 		this.cache = cache;
 		if (!configFile.exists()) {
 			//noinspection finally
