@@ -72,7 +72,7 @@ public class Starter {
 			boolean debug = line.hasOption(DEBUG_PARAM);
 			String path = line.getOptionValue(PATH_PARAM, "");
 			if (path.isEmpty() && System.getenv("CONFIG_PATH") != null)
-				path = System.getenv(PATH_PARAM);
+				path = System.getenv("CONFIG_PATH");
 			new Starter(debug, path);
 		} catch (ParseException exp) {
 			System.err.println(exp.getMessage());
