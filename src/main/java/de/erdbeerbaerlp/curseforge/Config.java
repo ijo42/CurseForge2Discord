@@ -46,6 +46,7 @@ public class Config {
 				final Path backupPath = Paths.get(configFile.getAbsolutePath() + ".backup.txt");
 				if (backupPath.toFile().exists()) {
 					System.out.println("REPLACING OLD BACKUP!!!!");
+					//noinspection ResultOfMethodCallIgnored
 					backupPath.toFile().delete();
 				}
 				Files.move(configFile.toPath(), backupPath);
