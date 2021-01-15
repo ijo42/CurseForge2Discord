@@ -14,10 +14,9 @@ import net.ranktw.DiscordWebHooks.embed.ThumbnailEmbed;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 
 public class EmbedMessage {
@@ -86,13 +85,8 @@ public class EmbedMessage {
 	private static String getGameVersions(final CurseProject proj) throws CurseException {
 		if (proj.files().first().gameVersionStrings().isEmpty())
 			return "UNKNOWN";
-		StringBuilder out = new StringBuilder();
-		final Stream<String> stream = proj.files().first().gameVersionStrings().stream().sorted();
-		for (Iterator<String> it = stream.iterator(); it.hasNext(); ) {
-			final String s = it.next();
-			out.append(s).append(it.hasNext() ? ", " : "");
-		}
-		return out.toString();
+		return proj.files().first().gameVersionStrings().stream().sorted().
+				collect(Collectors.joining(", "));
 	}
 
 	/**
@@ -105,11 +99,7 @@ public class EmbedMessage {
 	 * @return discord code syntax
 	 */
 	private static String getSyntax(String md) {
-		if (!(md.equals("Syntax"))) {
-			return md + "\n";
-		} else {
-			return "\n";
-		}
+		return md.equals("Syntax") ? "\n" : md + "\n";
 	}
 
 	/**

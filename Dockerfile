@@ -1,7 +1,7 @@
-FROM bellsoft/liberica-openjdk-alpine:11
+FROM bellsoft/liberica-openjre-alpine:8u272
 LABEL maintainer="admin@ijo42.ru"
 
-ENV CONFIG_PATH="/opt/curse2discord/configs"
+ENV CONFIG_PATH=/opt/curse2discord/configs
 
 WORKDIR /opt/curse2discord
 COPY build/libs/CurseForge2Discord.jar /opt/curse2discord
