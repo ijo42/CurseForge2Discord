@@ -28,7 +28,6 @@ public class Config {
 		this.cacheFile = new File(filePath + File.pathSeparator + cacheFileName);
 		this.cache = cache;
 		if (!configFile.exists()) {
-			//noinspection finally
 			try (InputStream link = getClass().getResourceAsStream("/" + configFileName)) {
 				Files.copy(link, configFile.getAbsoluteFile().toPath());
 				link.close();
@@ -36,14 +35,12 @@ public class Config {
 			} catch (IOException e) {
 				System.err.println("Could not extract default config file");
 				e.printStackTrace();
-			} finally {
-				System.exit(0);
 			}
+			System.exit(0);
 		}
 
 		this.conf = ConfigFactory.parseFile(configFile);
 		if (!this.conf.hasPath("ver") || this.conf.getInt("ver") != Starter.CFG_VERSION) {
-			//noinspection finally
 			try {
 				System.out.println("Resetting config, creating backup...");
 				final Path backupPath = Paths.get(configFile.getAbsolutePath() + ".backup.txt");
@@ -59,9 +56,8 @@ public class Config {
 			} catch (IOException e) {
 				System.err.println("Could not reset config file!");
 				e.printStackTrace();
-			} finally {
-				System.exit(0);
 			}
+			System.exit(0);
 		}
 		loadConfig();
 	}
