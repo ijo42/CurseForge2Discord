@@ -4,6 +4,8 @@ on:
     paths-ignore:
     - '**.md'
     - '.git**'
+    branches-ignore:
+    - 'dependabot/**'
   create:
     tags:
       - v*
