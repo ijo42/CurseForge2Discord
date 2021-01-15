@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v2.2.2
         with:
           name: CurseForge2DiscordExcecutable
           path: ./build/libs/CurseForge2Discord.jar
