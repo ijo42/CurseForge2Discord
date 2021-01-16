@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Starter {
+	final static String DISCORD_WEBHOOK_ENDPOINT = "https://discord.com/api/webhooks/%s/%s";
 	public static final int CFG_VERSION = 5;
 	public static final String PATH_PARAM = "path";
 	public static final String DEBUG_PARAM = "debug";
