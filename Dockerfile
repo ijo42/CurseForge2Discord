@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjre-alpine:8u272
+FROM bellsoft/liberica-openjre-alpine:15.0.1-9
 LABEL maintainer="admin@ijo42.ru"
 
 ENV CONFIG_PATH=/opt/curse2discord/configs

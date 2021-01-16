@@ -49,7 +49,7 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
     options.incremental = true // one flag, and things will get so MUCH faster
-    sourceCompatibility = targetCompatibility = '1.8'
+    sourceCompatibility = targetCompatibility = '15'
 }
 jar.archiveName("${project.archivesBaseName}.jar")
 
