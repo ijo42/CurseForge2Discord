@@ -15,11 +15,10 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class EmbedMessage {
 
-	private final static Color
+	private final static Color// Got from CurseForge
 			release = new Color(20, 184, 102),
 			beta = new Color(14, 155, 216),
 			alpha = new Color(211, 202, 232);
@@ -32,16 +31,11 @@ public class EmbedMessage {
 	}
 
 	private static Color getColorFromReleaseType(CurseReleaseType releaseType) {
-		switch (releaseType) {
-			case RELEASE: // Got from CurseForge
-				return release;
-			case BETA:
-				return beta;
-			case ALPHA:
-				return alpha;
-			default:
-				throw new IllegalStateException("Unexpected value: " + releaseType);
-		}
+		return switch (releaseType) {
+			case RELEASE -> release;
+			case BETA -> beta;
+			case ALPHA -> alpha;
+		};
 	}
 
 	/**
@@ -83,8 +77,7 @@ public class EmbedMessage {
 	private static String getGameVersions(final CurseProject proj) throws CurseException {
 		if (proj.files().first().gameVersionStrings().isEmpty())
 			return "UNKNOWN";
-		return proj.files().first().gameVersionStrings().stream().sorted().
-				collect(Collectors.joining(", "));
+		return String.join(", ", proj.files().first().gameVersionStrings());
 	}
 
 	/**
@@ -110,7 +103,7 @@ public class EmbedMessage {
 	private static String getUrl(final CurseProject proj) throws CurseException {
 		String urlPre = proj.url().toString();
 		int id = proj.files().first().id();
-		return urlPre + "/files/" + id;
+		return "%s/files/%d".formatted(urlPre, id);
 	}
 
 	/**
@@ -123,16 +116,21 @@ public class EmbedMessage {
 	public void messageWithoutLink(CurseProject proj, CurseFile file, WebhookClient webhook)
 			throws CurseException {
 		final WebhookEmbed embed = new WebhookEmbedBuilder().
-				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), proj.url().toString(), null)).
+				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), null, proj.url().toString())).
 				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
 				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
 				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
 				addField(new WebhookEmbed.EmbedField(false, "Build",
-						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`")).
+						("""
+								**Release Type**: `%s`
+								 **File Name**: `%s`
+								 **Category**: `%s`
+								 **GameVersion**: `%s`""").formatted(file.releaseType().name(), file.displayName(), proj.categorySection().name(), getGameVersions(proj)))).
 				addField(new WebhookEmbed.EmbedField(false, "Changelog:",
-						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```")).
+						("""
+								```%s
+								%s
+								```""").formatted(syntax, formatChangelog(file.changelogPlainText(1000))))).
 				build();
 		final @NotNull WebhookMessage message = new WebhookMessageBuilder().
 				setContent(getMessageDescription()).
@@ -152,16 +150,22 @@ public class EmbedMessage {
 	public void messageWithCurseLink(CurseProject proj, CurseFile file, WebhookClient webhook)
 			throws CurseException {
 		final WebhookEmbed embed = new WebhookEmbedBuilder().
-				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), proj.url().toString(), null)).
+				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), null, proj.url().toString())).
 				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
 				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
 				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
 				addField(new WebhookEmbed.EmbedField(false, "Build",
-						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")")).
+						("""
+								                        **Release Type**: `%s`
+								**File Name**: `%s`
+								**Category**: `%s`
+								**GameVersion**: `%s`
+								**Website Link**: [CurseForge](%s)""").formatted(file.releaseType().name(), file.displayName(), proj.categorySection().name(), getGameVersions(proj), getUrl(proj)))).
 				addField(new WebhookEmbed.EmbedField(false, "Changelog:",
-						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```")).
+						("""
+								```%s
+								%s
+								```""").formatted(syntax, formatChangelog(file.changelogPlainText(1000))))).
 				build();
 		final @NotNull WebhookMessage message = new WebhookMessageBuilder().
 				setContent(getMessageDescription()).
@@ -181,17 +185,22 @@ public class EmbedMessage {
 	public void messageWithDirectLink(CurseProject proj, CurseFile file, WebhookClient webhook)
 			throws CurseException {
 		final WebhookEmbed embed = new WebhookEmbedBuilder().
-				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), proj.url().toString(), null)).
+				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), null, proj.url().toString())).
 				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
 				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
 				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
 				addField(new WebhookEmbed.EmbedField(false, "Build",
-						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
-								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
-								+ ")")).
+						("""
+								**Release Type**: `%s`
+								 **File Name**: `%s`
+								 **Category**: `%s`
+								 **GameVersion**: `%s`
+								 **Download Link**: [Download](%s)""").formatted(file.releaseType().name(), file.displayName(), proj.categorySection().name(), getGameVersions(proj), file.downloadURL()))).
 				addField(new WebhookEmbed.EmbedField(false, "Changelog:",
-						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```")).
+						("""
+								```%s
+								%s
+								```""").formatted(syntax, formatChangelog(file.changelogPlainText(1000))))).
 				build();
 		final @NotNull WebhookMessage message = new WebhookMessageBuilder().
 				setContent(getMessageDescription()).
@@ -212,7 +221,7 @@ public class EmbedMessage {
 	public void sendPingableUpdateNotification(String role, CurseProject proj, WebhookClient webhook)
 			throws CurseException {
 		if (!role.isEmpty())
-			webhook.send(String.format("<@&%s>", role));
+			webhook.send("<@&%s>".formatted(role));
 		sendUpdateNotification(proj, webhook);
 	}
 
@@ -225,15 +234,9 @@ public class EmbedMessage {
 	 */
 	public void sendUpdateNotification(CurseProject proj, WebhookClient webhook) throws CurseException {
 		switch (this.config.updateFileLink) {
-			case NO_LINK:
-				messageWithoutLink(proj, proj.files().first(), webhook);
-				break;
-			case CURSE:
-				messageWithCurseLink(proj, proj.files().first(), webhook);
-				break;
-			case DIRECT:
-				messageWithDirectLink(proj, proj.files().first(), webhook);
-				break;
+			case NO_LINK -> messageWithoutLink(proj, proj.files().first(), webhook);
+			case CURSE -> messageWithCurseLink(proj, proj.files().first(), webhook);
+			case DIRECT -> messageWithDirectLink(proj, proj.files().first(), webhook);
 		}
 	}
 

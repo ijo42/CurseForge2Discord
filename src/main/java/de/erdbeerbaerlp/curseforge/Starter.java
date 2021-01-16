@@ -71,8 +71,9 @@ public class Starter {
 			CommandLine line = parser.parse(o, args);
 			boolean debug = line.hasOption(DEBUG_PARAM);
 			String path = line.getOptionValue(PATH_PARAM, "");
-			if (path.isEmpty() && System.getenv("CONFIG_PATH") != null)
-				path = System.getenv("CONFIG_PATH");
+			final String envVar = System.getenv("CONFIG_PATH");
+			if (path.isEmpty() && envVar != null && !envVar.isEmpty() && !envVar.isBlank())
+				path = envVar;
 			new Starter(debug, path);
 		} catch (ParseException exp) {
 			System.err.println(exp.getMessage());
