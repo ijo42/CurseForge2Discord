@@ -1,16 +1,15 @@
 package de.erdbeerbaerlp.curseforge;
 
-import com.mrpowergamerbr.temmiewebhook.DiscordEmbed;
-import com.mrpowergamerbr.temmiewebhook.DiscordMessage;
-import com.mrpowergamerbr.temmiewebhook.TemmieWebhook;
-import com.mrpowergamerbr.temmiewebhook.embed.AuthorEmbed;
-import com.mrpowergamerbr.temmiewebhook.embed.FieldEmbed;
-import com.mrpowergamerbr.temmiewebhook.embed.FooterEmbed;
-import com.mrpowergamerbr.temmiewebhook.embed.ThumbnailEmbed;
+import club.minnced.discord.webhook.WebhookClient;
+import club.minnced.discord.webhook.send.WebhookEmbed;
+import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
+import club.minnced.discord.webhook.send.WebhookMessage;
+import club.minnced.discord.webhook.send.WebhookMessageBuilder;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.file.CurseFile;
 import com.therandomlabs.curseapi.file.CurseReleaseType;
 import com.therandomlabs.curseapi.project.CurseProject;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -121,26 +120,26 @@ public class EmbedMessage {
 	 * @param file the file
 	 * @throws CurseException the curse exception
 	 */
-	public void messageWithoutLink(CurseProject proj, CurseFile file, TemmieWebhook webhook)
+	public void messageWithoutLink(CurseProject proj, CurseFile file, WebhookClient webhook)
 			throws CurseException {
-		final DiscordEmbed embed = DiscordEmbed.builder().
-				author(new AuthorEmbed(proj.name(), proj.url().toString(), null, null)).
-				color(getColorFromReleaseType(file.releaseType()).getRGB()).
-				thumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), null, 80, 80)).
-				footer(new FooterEmbed("Update now!", this.config.footerImage, null)).
-				field(new FieldEmbed("Build",
+		final WebhookEmbed embed = new WebhookEmbedBuilder().
+				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), proj.url().toString(), null)).
+				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
+				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
+				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
+				addField(new WebhookEmbed.EmbedField(false, "Build",
 						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
 								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`", false)).
-				field(new FieldEmbed("Changelog:",
-						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-						false)).build();
-		final DiscordMessage build = DiscordMessage.builder().
-				content(getMessageDescription()).
-				username("Update Detector").
-				embed(embed).
+								+ getGameVersions(proj) + "`")).
+				addField(new WebhookEmbed.EmbedField(false, "Changelog:",
+						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```")).
 				build();
-		webhook.sendMessage(build);
+		final @NotNull WebhookMessage message = new WebhookMessageBuilder().
+				setContent(getMessageDescription()).
+				setUsername("Update Detector").
+				addEmbeds(embed).
+				build();
+		webhook.send(message);
 	}
 
 	/**
@@ -150,28 +149,26 @@ public class EmbedMessage {
 	 * @param file the file
 	 * @throws CurseException the curse exception
 	 */
-	public void messageWithCurseLink(CurseProject proj, CurseFile file, TemmieWebhook webhook)
+	public void messageWithCurseLink(CurseProject proj, CurseFile file, WebhookClient webhook)
 			throws CurseException {
-		final DiscordEmbed embed = DiscordEmbed.builder().
-				author(new AuthorEmbed(proj.name(), proj.url().toString(), null, null)).
-				color(getColorFromReleaseType(file.releaseType()).getRGB()).
-				thumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), null, 80, 80)).
-				footer(new FooterEmbed("Update now!", this.config.footerImage, null)).
-				field(new FieldEmbed("Build",
+		final WebhookEmbed embed = new WebhookEmbedBuilder().
+				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), proj.url().toString(), null)).
+				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
+				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
+				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
+				addField(new WebhookEmbed.EmbedField(false, "Build",
 						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
 								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
-								+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")",
-						false)).
-				field(new FieldEmbed("Changelog:",
-						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-						false)).
+								+ getGameVersions(proj) + "`" + "\n **Website Link**: " + "[CurseForge](" + getUrl(proj) + ")")).
+				addField(new WebhookEmbed.EmbedField(false, "Changelog:",
+						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```")).
 				build();
-		final DiscordMessage build = DiscordMessage.builder().
-				content(getMessageDescription()).
-				username("Update Detector").
-				embed(embed).
+		final @NotNull WebhookMessage message = new WebhookMessageBuilder().
+				setContent(getMessageDescription()).
+				setUsername("Update Detector").
+				addEmbeds(embed).
 				build();
-		webhook.sendMessage(build);
+		webhook.send(message);
 	}
 
 	/**
@@ -181,27 +178,27 @@ public class EmbedMessage {
 	 * @param file the file
 	 * @throws CurseException the curse exception
 	 */
-	public void messageWithDirectLink(CurseProject proj, CurseFile file, TemmieWebhook webhook)
+	public void messageWithDirectLink(CurseProject proj, CurseFile file, WebhookClient webhook)
 			throws CurseException {
-		final DiscordEmbed embed = DiscordEmbed.builder().
-				author(new AuthorEmbed(proj.name(), proj.url().toString(), null, null)).
-				color(getColorFromReleaseType(file.releaseType()).getRGB()).
-				thumbnail(new ThumbnailEmbed(proj.logo().thumbnailURL().toString(), null, 80, 80)).
-				footer(new FooterEmbed("Update now!", this.config.footerImage, null)).
-				field(new FieldEmbed("Build",
+		final WebhookEmbed embed = new WebhookEmbedBuilder().
+				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), proj.url().toString(), null)).
+				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
+				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
+				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
+				addField(new WebhookEmbed.EmbedField(false, "Build",
 						"**Release Type**: `" + file.releaseType().name() + "`" + "\n **File Name**: `" + file.displayName()
 								+ "`" + "\n **Category**: `" + proj.categorySection().name() + "`" + "\n **GameVersion**: `"
 								+ getGameVersions(proj) + "`" + "\n **Download Link**: " + "[Download](" + file.downloadURL()
-								+ ")", false)).
-				field(new FieldEmbed("Changelog:",
-						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```",
-						false)).build();
-		final DiscordMessage build = DiscordMessage.builder().
-				content(getMessageDescription()).
-				username("Update Detector").
-				embed(embed).
+								+ ")")).
+				addField(new WebhookEmbed.EmbedField(false, "Changelog:",
+						"```" + syntax + "\n" + formatChangelog(file.changelogPlainText(1000)) + "\n```")).
 				build();
-		webhook.sendMessage(build);
+		final @NotNull WebhookMessage message = new WebhookMessageBuilder().
+				setContent(getMessageDescription()).
+				setUsername("Update Detector").
+				addEmbeds(embed).
+				build();
+		webhook.send(message);
 	}
 
 	/**
@@ -212,10 +209,10 @@ public class EmbedMessage {
 	 * @param webhook webhook to send
 	 * @throws CurseException the curse exception
 	 */
-	public void sendPingableUpdateNotification(String role, CurseProject proj, TemmieWebhook webhook)
+	public void sendPingableUpdateNotification(String role, CurseProject proj, WebhookClient webhook)
 			throws CurseException {
 		if (!role.isEmpty())
-			webhook.sendMessage(DiscordMessage.builder().content(String.format("<@&%s>", role)).build());
+			webhook.send(String.format("<@&%s>", role));
 		sendUpdateNotification(proj, webhook);
 	}
 
@@ -226,7 +223,7 @@ public class EmbedMessage {
 	 * @param webhook webhook to send
 	 * @throws CurseException the curse exception
 	 */
-	public void sendUpdateNotification(CurseProject proj, TemmieWebhook webhook) throws CurseException {
+	public void sendUpdateNotification(CurseProject proj, WebhookClient webhook) throws CurseException {
 		switch (this.config.updateFileLink) {
 			case NO_LINK:
 				messageWithoutLink(proj, proj.files().first(), webhook);

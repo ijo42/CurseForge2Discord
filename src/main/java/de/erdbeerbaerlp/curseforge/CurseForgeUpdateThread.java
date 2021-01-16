@@ -1,6 +1,6 @@
 package de.erdbeerbaerlp.curseforge;
 
-import com.mrpowergamerbr.temmiewebhook.TemmieWebhook;
+import club.minnced.discord.webhook.WebhookClient;
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
 import com.therandomlabs.curseapi.project.CurseProject;
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CurseForgeUpdateThread extends TimerTask {
 	private final CurseProject proj;
-	private final TemmieWebhook webhook;
+	private final WebhookClient webhook;
 	private final Starter starter = Starter.getInstance();
 	private final EmbedMessage embedMessage;
 	private final Config config;
@@ -24,7 +24,7 @@ public class CurseForgeUpdateThread extends TimerTask {
 			throw new RuntimeException("Missed configuration");
 		this.embedMessage = embedMessage;
 		String[] ids = id.split(";;");
-		webhook = new TemmieWebhook(String.format(Starter.DISCORD_WEBHOOK_ENDPOINT, ids[ 1 ], ids[ 2 ]));
+		webhook = WebhookClient.withId(Long.parseLong(ids[ 1 ]), ids[ 2 ]);
 		if (ids.length == 4)
 			roleID = ids[ 3 ];
 		this.proj = CurseAPI.project(Integer.parseInt(id.split(";;")[ 0 ])).
