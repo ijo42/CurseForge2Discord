@@ -50,7 +50,7 @@ public class Config {
 					backupPath.toFile().delete();
 				}
 				Files.move(configFile.toPath(), backupPath);
-				InputStream link = getClass().getResourceAsStream("/" + configFile.getName());
+				InputStream link = getClass().getResourceAsStream(configFileName);
 				Files.copy(link, configFile.getAbsoluteFile().toPath());
 				link.close();
 				System.err.println("Reset completed! Please reconfigurate.");
