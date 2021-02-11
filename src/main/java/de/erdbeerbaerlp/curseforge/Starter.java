@@ -27,7 +27,7 @@ public class Starter {
 		this.cacheGenerated = this.config.cacheFile.exists();
 		if (!(cacheGenerated || debug)) {
 			System.out.println("Generating cache...");
-			for (String p : config.IDs) {
+			for (String p : config.IDs)
 				try {
 					CurseAPI.project(Integer.parseInt(p.split(";;")[ 0 ])).
 							ifPresent(pr -> {
@@ -40,7 +40,6 @@ public class Starter {
 				} catch (CurseException e) {
 					e.printStackTrace();
 				}
-			}
 			config.saveCache();
 			System.out.println("Done!");
 		} else config.loadCache();
