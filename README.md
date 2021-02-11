@@ -26,10 +26,7 @@ feats:
 
 ## Deployment
 
-#### Docker. **
-Preferer** ([Griefed](https://github.com/Griefed)/**[docker-Curseforge-Bot](https://github.com/Griefed/docker-Curseforge-Bot)**) *
-using docker-compose:*
-
+#### Docker. **Preferer** ([Griefed](https://github.com/Griefed)/**[docker-Curseforge-Bot](https://github.com/Griefed/docker-Curseforge-Bot)**) *using docker-compose:*
 ```docker-compose.yml
 version: "2"
 services:
