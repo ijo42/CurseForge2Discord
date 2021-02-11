@@ -229,5 +229,5 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle,eclipse,windows,intellij+all
 
-./bot.conf
-./Caches_DONT-DELETE
+/bot.conf
+/Caches_DONT-DELETE
