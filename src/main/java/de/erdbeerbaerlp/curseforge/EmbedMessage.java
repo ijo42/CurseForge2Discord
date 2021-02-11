@@ -11,17 +11,17 @@ import com.therandomlabs.curseapi.file.CurseReleaseType;
 import com.therandomlabs.curseapi.project.CurseProject;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
 public class EmbedMessage {
 
-	private final static Color// Got from CurseForge
-			release = new Color(20, 184, 102),
-			beta = new Color(14, 155, 216),
-			alpha = new Color(211, 202, 232);
+	private final static int// Got from CurseForge
+			release = 0x14b866, // new Color(20, 184, 102).getRGB()
+			beta = 0xe9bd8,     // new Color(14, 155, 216).getRGB()
+			alpha = 0xd3cae8;   // new Color(211, 202, 232).getRGB()
+
 	private final Config config;
 	private final String syntax;
 
@@ -30,7 +30,7 @@ public class EmbedMessage {
 		this.syntax = getSyntax(this.config.changelogDiscordFormat);
 	}
 
-	private static Color getColorFromReleaseType(CurseReleaseType releaseType) {
+	private static int getColorFromReleaseType(CurseReleaseType releaseType) {
 		return switch (releaseType) {
 			case RELEASE -> release;
 			case BETA -> beta;
@@ -117,7 +117,7 @@ public class EmbedMessage {
 			throws CurseException {
 		final WebhookEmbed embed = new WebhookEmbedBuilder().
 				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), null, proj.url().toString())).
-				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
+				setColor(getColorFromReleaseType(file.releaseType())).
 				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
 				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
 				addField(new WebhookEmbed.EmbedField(false, "Build",
@@ -151,7 +151,7 @@ public class EmbedMessage {
 			throws CurseException {
 		final WebhookEmbed embed = new WebhookEmbedBuilder().
 				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), null, proj.url().toString())).
-				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
+				setColor(getColorFromReleaseType(file.releaseType())).
 				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
 				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
 				addField(new WebhookEmbed.EmbedField(false, "Build",
@@ -186,7 +186,7 @@ public class EmbedMessage {
 			throws CurseException {
 		final WebhookEmbed embed = new WebhookEmbedBuilder().
 				setAuthor(new WebhookEmbed.EmbedAuthor(proj.name(), null, proj.url().toString())).
-				setColor(getColorFromReleaseType(file.releaseType()).getRGB()).
+				setColor(getColorFromReleaseType(file.releaseType())).
 				setThumbnailUrl(proj.logo().thumbnailURL().toString()).
 				setFooter(new WebhookEmbed.EmbedFooter("Update now!", this.config.footerImage)).
 				addField(new WebhookEmbed.EmbedField(false, "Build",

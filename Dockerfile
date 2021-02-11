@@ -31,7 +31,7 @@ ARG LIBERICA_VARIANT=jdk
 ARG LIBERICA_RELEASE_TAG=""
 ARG LIBERICA_ARCH=x64
 
-ARG OPT_MODULES="java.base,java.logging,java.desktop"
+ARG OPT_MODULES="java.base,java.logging"
 ARG OPT_PKGS=""
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
