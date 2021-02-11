@@ -13,7 +13,7 @@ RUN \
   ./gradlew
 
 
-FROM lsiobase/alpine:3.11
+FROM lsiobase/alpine:3.11 as release
 
 LABEL maintainer="ijo42 <admin@ijo42.ru>"
 
@@ -28,30 +28,27 @@ ARG LIBERICA_ROOT=${LIBERICA_JVM_DIR}/jdk-15
 ARG LIBERICA_VERSION=15.0.2
 ARG LIBERICA_BUILD=10
 ARG LIBERICA_VARIANT=jdk
-ARG LIBERICA_RELEASE_TAG=
+ARG LIBERICA_RELEASE_TAG=""
 ARG LIBERICA_ARCH=x64
-ARG LIBERICA_GLIBC=no
 
 ARG OPT_MODULES="java.base,java.logging,java.desktop"
-ARG OPT_PKGS=
+ARG OPT_PKGS=""
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 RUN \
-  RSUFFIX="" && if [ "$LIBERICA_IMAGE_VARIANT" = "lite" ]; then RSUFFIX="-lite"; fi && \
-  LIBSUFFIX="" && if [ "$LIBERICA_GLIBC" = "no" ]; then LIBSUFFIX="-musl"; fi && \
   for pkg in $OPT_PKGS ; do apk --no-cache add $pkg ; done && \
   mkdir -p /tmp/java && \
   LIBERICA_BUILD_STR=${LIBERICA_BUILD:+"+${LIBERICA_BUILD}"} && \
-  PKG=`echo "bellsoft-${LIBERICA_VARIANT}${LIBERICA_VERSION}${LIBERICA_BUILD_STR}-linux-${LIBERICA_ARCH}${LIBSUFFIX}${RSUFFIX}.tar.gz"` && \
+  PKG="bellsoft-${LIBERICA_VARIANT}${LIBERICA_VERSION}${LIBERICA_BUILD_STR}-linux-${LIBERICA_ARCH}-musl.tar.gz" && \
   PKG_URL="https://download.bell-sw.com/java/${LIBERICA_VERSION}${LIBERICA_BUILD_STR}/${PKG}" && \
   echo "Download ${PKG_URL}" && \
   wget "${PKG_URL}" -O /tmp/java/jdk.tar.gz && \
-  SHA1=`wget -q "https://download.bell-sw.com/sha1sum/java/${LIBERICA_VERSION}${LIBERICA_BUILD_STR}" -O - | grep ${PKG} | cut -f1 -d' '` && \
+  SHA1=$(wget -q "https://download.bell-sw.com/sha1sum/java/${LIBERICA_VERSION}${LIBERICA_BUILD_STR}" -O - | grep ${PKG} | cut -f1 -d' ') && \
   echo "${SHA1} */tmp/java/jdk.tar.gz" | sha1sum -c - && \
   tar xzf /tmp/java/jdk.tar.gz -C /tmp/java && \
   UNPACKED_ROOT="/tmp/java/${LIBERICA_VARIANT}-${LIBERICA_VERSION}" && \
   case $LIBERICA_IMAGE_VARIANT in \
-  base) apk add binutils && mkdir -pv "${LIBERICA_JVM_DIR}" && "${UNPACKED_ROOT}/bin/jlink" --add-modules ${OPT_MODULES} --no-header-files --no-man-pages --strip-debug --module-path \
+  base) apk add --no-cache binutils && mkdir -pv "${LIBERICA_JVM_DIR}" && "${UNPACKED_ROOT}/bin/jlink" --add-modules ${OPT_MODULES} --no-header-files --no-man-pages --strip-debug --module-path \
     "${UNPACKED_ROOT}"/jmods --vm=server --output "${LIBERICA_ROOT}" && apk del binutils ;; \
   standard) apk --no-cache add binutils &&  mkdir -pv "${LIBERICA_ROOT}" && find /tmp/java/${LIBERICA_VARIANT}* -maxdepth 1 -mindepth 1 -exec mv -v "{}" "${LIBERICA_ROOT}/" \; ;; \
   *) mkdir -pv "${LIBERICA_ROOT}" && find /tmp/java/${LIBERICA_VARIANT}* -maxdepth 1 -mindepth 1 -exec mv -v "{}" "${LIBERICA_ROOT}/" \; ;; \
