@@ -3,9 +3,19 @@ package de.erdbeerbaerlp.curseforge;
 
 import com.therandomlabs.curseapi.CurseAPI;
 import com.therandomlabs.curseapi.CurseException;
-import org.apache.commons.cli.*;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
-import java.util.*;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class Starter {
@@ -48,7 +58,11 @@ public class Starter {
 			try {
 				new CurseForgeUpdateThread(p, embedMessage, config).run();
 			} catch (CurseException e) {
-				e.printStackTrace();
+				if (!(e.getCause() instanceof SocketTimeoutException)) {
+					e.printStackTrace();
+				} else {
+					System.err.println(e.getMessage());
+				}
 			}
 
 		new Timer(CacheSaveThread.class.getName()).
