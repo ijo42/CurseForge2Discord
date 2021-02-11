@@ -63,8 +63,7 @@ RUN \
   mkdir -p \
     /app/curseforge2discord
 
-COPY --from=builder /tmp/curseforge2discord/build/libs/CurseForge2Discord.jar /app/curseforge2discord/CurseForge2Discord.jar
-
+COPY --from=builder /tmp/curseforge2discord/build/libs/curseforge2discord.jar /app/curseforge2discord/CurseForge2Discord.jar
 
 COPY root/ /
 
