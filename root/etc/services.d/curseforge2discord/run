@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv bash
+
+cd /config
+
+exec s6-setuidgid abc /usr/lib/jvm/jdk-15/bin/java -jar /app/curseforge2discord/CurseForge2Discord.jar

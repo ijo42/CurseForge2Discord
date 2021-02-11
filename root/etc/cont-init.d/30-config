@@ -1,0 +1,47 @@
+#!/usr/bin/with-contenv bash
+
+if [ ! -f /config/bot.conf ]; then
+  echo "**** setting up curseforgebot configuration ****"
+  cp -f \
+    /defaults/bot.conf \
+    /config/bot.conf
+  sed -i \
+    "s/DISCORD_CHANNEL_ID/${DISCORD_CHANNEL_ID}/g" \
+    /config/bot.conf
+  sed -i \
+    "s/WEBHOOK_TOKEN/${WEBHOOK_TOKEN}/g" \
+    /config/bot.conf
+  sed -i \
+    "s/PROJECT_ID/${PROJECT_ID}/g" \
+    /config/bot.conf
+  if [ -z "$ROLE_ID" ]; then
+    sed -i \
+      "s/ROLE_ID/000000000/g" \
+      /config/bot.conf
+  else
+    sed -i \
+      "s/ROLE_ID/${ROLE_ID}/g" \
+      /config/bot.conf
+  fi
+  sed -i \
+    "s/FILE_LINK/${FILE_LINK}/g" \
+    /config/bot.conf
+  sed -i \
+    "s/DESCRIPTION/${DESCRIPTION}/g" \
+    /config/bot.conf
+  sed -i \
+    "s/CHANGELOG_FORMAT/${CHANGELOG_FORMAT}/g" \
+    /config/bot.conf
+fi
+
+chown -R \
+  abc:abc \
+    /app/curseforge2discord \
+    /config
+
+if [ -f /config/Caches_DONT-DELETE ]; then
+  chmod +wr \
+    /config/Caches_DONT-DELETE
+fi
+
+echo "**** to reset the configuration, delete bot.conf in /config/bot.conf and restart the container ****"
