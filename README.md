@@ -1,7 +1,5 @@
 # CurseForge2Discord
 
-***
-
 ## Difference from [ErdbeerbaerLP/Curseforge-Bot](https://github.com/ErdbeerbaerLP/Curseforge-Bot)
 
 Fork based on *Minnced* WebHook Discord API instead JDA. Personal thanks [Griefed](https://github.com/Griefed) for a
@@ -21,21 +19,19 @@ feats:
 
 ---
 
-The [lsiobase/alpine](https://hub.docker.com/r/lsiobase/alpine) image is a custom base image built
-with [Alpine linux](https://alpinelinux.org/) and [S6 overlay](https://github.com/just-containers/s6-overlay). Using
-this image allows us to use the same user/group ids in the container as on the host, making file transfers much easier
+The [lsiobase/alpine](https://hub.docker.com/r/lsiobase/alpine) image is a custom base image built with [Alpine linux](https://alpinelinux.org/) and [S6 overlay](https://github.com/just-containers/s6-overlay). Using this image allows us to use the same user/group ids in the container as on the host, making file transfers much easier
 
 ## Image-Variants
 
 |                Tags | Description                                                  |
 | ------------------: | ------------------------------------------------------------ |
 |            `latest` | Using the `latest` tag will pull the latest release image for amd64/x86_64 architecture. |
-|            `master` | Using the `latest` tag will pull latest master-branch image for amd64/x86_64 architecture. |
-|               `dev` | Using the `latest` tag will pull latest dev image for amd64/x86_64 architecture. |
+|            `master` | Using the `master` tag will pull latest master-branch image for amd64/x86_64 architecture. |
+|               `dev` | Using the `dev` tag will pull latest dev image for amd64/x86_64 architecture. |
 | `sha-([a-z0-9]{7})` | Using this tag will push image based on relevant git-commit `(sha-fbc170f)` |
-|        `\d\.\d\.\d` | Using this tag will push relevant Release `(2.0.0)`          |
+|        `\d\.\d\.\d` | Using this tag will push relevant Release `(2.0.1)`          |
 
-## Pre-built images Images
+## Pre-built Images
 
 using docker-compose:
 
@@ -62,7 +58,7 @@ services:
       - ./host/path/to/config:/config # Where the bot-conf will be stored
 ```
 
-Using CLI:
+using CLI:
 
 ```bash
 docker create \
@@ -87,8 +83,7 @@ docker create \
 
 ### Image
 
-Use the [Dockerfile](https://github.com/ijo42/CurseForge2Discord/blob/master/Dockerfile) to build the image yourself, in
-case you want to make any changes to it
+Use the [Dockerfile](https://github.com/ijo42/CurseForge2Discord/blob/master/Dockerfile) to build the image yourself, in case you want to make any changes to it
 
 docker-compose.yml:
 
@@ -144,8 +139,6 @@ services:
 
 5. Start: `java -jar build/libs/CurseForge2Discord.jar`
 
-***
-
 ## Adding more projects to track
 
 If you have multiple projects in CurseForge which you want to track with this bot, you need to manually edit
@@ -178,22 +171,22 @@ In this instance `PUID=1000` and `PGID=1000`, to find yours use `id user` as bel
 
 ## Configuration
 
-Configuration | Explanation
------------- | -------------
-[Restart policy](https://docs.docker.com/compose/compose-file/#restart) | "no", always, on-failure, unless-stopped
-config volume | Contains config files and logs.
-data volume | Contains your/the containers important data.
-TZ | Timezone
-PUID | for UserID
-PGID | for GroupID
-FOOTER_URL | URL to image in Footer of anounce
-DISCORD_CHANNEL_ID | The ID of the channel you want the bot to post in (from webhook)
-PROJECT_ID | The ID of your CurseForge project
-ROLE_ID | (Optional) The ID of the discord role mentioned when the bot makes a post
-FILE_LINK | `direct`-link to file or `curse`forge-link on project page or `nolink`.
-DESCRIPTION | This sets the text that appears as the message description in the update notification
-CHANGELOG_FORMAT | `yml` or `md` or `css`. Only choose one syntax. Can be very usefull if project owner/author uses discord MarkDown formatting in their changelog.
-WEBHOOK_TOKEN | Your discord-server webhook token
+|                                                Configuration | Explanation                                                  |
+| -----------------------------------------------------------: | ------------------------------------------------------------ |
+| [Restart policy](https://docs.docker.com/compose/compose-file/#restart) | "no", always, on-failure, unless-stopped                     |
+|                                                config volume | Contains config files and logs.                              |
+|                                                  data volume | Contains your/the containers important data.                 |
+|                                                           TZ | Timezone                                                     |
+|                                                         PUID | for UserID                                                   |
+|                                                         PGID | for GroupID                                                  |
+|                                                   FOOTER_URL | URL to image in Footer of anounce                            |
+|                                           DISCORD_CHANNEL_ID | The ID of the channel you want the bot to post in (from webhook) |
+|                                                   PROJECT_ID | The ID of your CurseForge project                            |
+|                                                      ROLE_ID | (Optional) The ID of the discord role mentioned when the bot makes a post |
+|                                                    FILE_LINK | `direct`-link to file or `curse` forge-link on project page or `nolink`. |
+|                                                  DESCRIPTION | This sets the text that appears as the message description in the update notification |
+|                                             CHANGELOG_FORMAT | `yml` or `md` or `css`. Only choose one syntax. Can be very usefull if project owner/author uses discord MarkDown formatting in their changelog. |
+|                                                WEBHOOK_TOKEN | Your discord-server webhook token                            |
 
 ## License
 
