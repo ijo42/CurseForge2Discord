@@ -80,27 +80,25 @@ services:
 # Don´t change this! Used internally to backup and reset the config if needed!
 ver = 5
 
-# Provide some Curseforge project IDs you want the bot to listen to
+# Provide some CurseForge project IDs you want the bot to listen to
 #
-# If you want a specific mod in a different channel and also ping a differnt role, you can add the 
-# channel id and role id like this:
-# "projectId;;channelId;;webhookToken;;RoleID"
-# Role ID doesnt have to be set, if its not dont include second ;;
+# Role ID doesn't have to be set, if its not don't include second ;;
 # NOTE: Role ID can only be set if a channel id is set as well
 # NOTE 2: channelId must me grabbed from DISCORD WEBHOOK
 # e.g. https://discord.com/api/webhooks/xxx/zzzz
 # which xxx is channel id, zzzz is webhook token
 ids = [
     # Uplink
-    "435552;;xxx;;???"
+    "PROJECT_ID;;DISCORD_CHANNEL_ID;;WEBHOOK_TOKEN"
+   #"435552;;7999;;pUZcQKgA;;7970"
 ]
 
 ## UPDATE MESSAGE OPTIONS ##
-# Provide a language syntax name to have the changelog formatted inside the embeded message for easier viewing if desired.
+# Provide a language syntax name to have the changelog formatted inside the embedded message for easier viewing if desired.
 #
-# Can be very usefull if project owner/author uses discord MarkDown formatting in their changelog
+# Can be very useful if project owner/author uses discord Markdown formatting in their changelog
 # Uploads as plain text if not changed (example: yml, md, css) Only choose one syntax
-changelogDiscordFormat = "Syntax"
+changelogDiscordFormat = "md"
 
 # This sets the text that appears as the message description in the update notification
 # (the text directly under the project name which is the message title)
@@ -115,15 +113,15 @@ messageDescription = "New File Detected For CurseForge Project"
 # "direct" = Direct link to download the file
 # "curse" = Link to the file download page on curseforge.com
 # "nolink" = Do not include a download link
-updateFileLink="curse"
+updateFileLink = "curse"
 
-# If you want the message to mention a particualr role when a update message is sent, add the Role ID here
+# If you want the message to mention a particular role when a update message is sent, add the Role ID here
 #
 # Only supports 1 role ID at this time
-mentionRole=000000000
+mentionRole = 000000000
 
-# You may provide custom image by url into Message Footer
-footerImage=""
+# You may provide custom image by URL into Message Footer
+footerImage = ""
 ```
 
 ## License
