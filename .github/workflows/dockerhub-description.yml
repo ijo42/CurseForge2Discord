@@ -20,5 +20,5 @@ jobs:
         uses: peter-evans/dockerhub-description@v2
         with:
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          password: ${{ secrets.DESK_UPD_PASS }}
           repository: ${{ env.DOCKER_IMAGE }}
