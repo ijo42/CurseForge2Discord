@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     # Only run on PRs if the source branch is on someone else's repo
-    if: ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+    if: ${{ github.repository != github.event.pull_request.head.repo.full_name }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -33,9 +33,9 @@ jobs:
 
       - name: "Comment build scan url"
         uses: actions/github-script@v3
-        if: github.event_name == 'pull_request' && failure()
+        if: ${{ failure() }}
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.issues.createComment({
               issue_number: context.issue.number,
