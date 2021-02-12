@@ -1,10 +1,10 @@
 name: "Validate Gradle Wrapper"
-on: 
+on:
   push:
-    paths: 
+    paths:
       - 'gradle**'
   pull_request:
-    paths: 
+    paths:
       - 'gradle**'
 
 jobs:

@@ -17,7 +17,7 @@ configurations {
     compile.extendsFrom(embed)
 }
 dependencies {
-    embed("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT"){
+    embed("com.github.TheRandomLabs:CurseAPI:master-SNAPSHOT") {
         transitive = true
     }
     compileOnly 'org.jetbrains:annotations:20.1.0'
@@ -33,14 +33,14 @@ jar {
     }
     manifest {
         attributes([
-                'Main-Class': mainClassName,
-                "Specification-Title": project.name,
-                "Specification-Vendor": "ijo42",
-                "Specification-Version": "1", // We are version 1 of ourselves
-                "Implementation-Title": project.name,
-                "Implementation-Vendor" :"ijo42",
+                'Main-Class'              : mainClassName,
+                "Specification-Title"     : project.name,
+                "Specification-Vendor"    : "ijo42",
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Vendor"   : "ijo42",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-                "Git-Commit-Hash": getGitHash()
+                "Git-Commit-Hash"         : getGitHash()
         ])
     }
     from 'LICENSE'
@@ -59,9 +59,10 @@ static def getGitHash() {
         def process = 'git rev-parse --short HEAD'.execute()
         process.waitFor()
         return (process.exitValue() ? 'unknown' : process.text.trim())
-    }catch(IOException ignored){
+    } catch (IOException ignored) {
         return 'unknown'
     }
 }
+
 defaultTasks 'build'
 
