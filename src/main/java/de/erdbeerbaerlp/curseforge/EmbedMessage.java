@@ -90,7 +90,7 @@ public class EmbedMessage {
 	 * @return discord code syntax
 	 */
 	private static String getSyntax(String md) {
-		return md.equals("Syntax") ? "\n" : md + "\n";
+		return "%s\n".formatted(md);
 	}
 
 	/**
