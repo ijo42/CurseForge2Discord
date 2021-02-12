@@ -30,6 +30,9 @@ if [ ! -f /config/bot.conf ]; then
     "s/DESCRIPTION/${DESCRIPTION}/g" \
     /config/bot.conf
   sed -i \
+    "s/FOOTER_URL/${FOOTER_URL}/g" \
+    /config/bot.conf
+  sed -i \
     "s/CHANGELOG_FORMAT/${CHANGELOG_FORMAT}/g" \
     /config/bot.conf
 fi
