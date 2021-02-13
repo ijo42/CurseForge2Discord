@@ -2,11 +2,10 @@ FROM gradle:jdk15 AS builder
 
 WORKDIR /tmp/curseforge2discord
 
-COPY build.gradle LICENSE src/ /tmp/curseforge2discord/
+COPY . /tmp/curseforge2discord/
 
 RUN \
   gradle
-
 
 FROM lsiobase/alpine:3.11 as release
 
