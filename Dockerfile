@@ -2,7 +2,7 @@ FROM gradle:jdk15 AS builder
 
 WORKDIR /tmp/curseforge2discord
 
-COPY src/ build.gradle LICENSE /
+COPY build.gradle LICENSE src/ /tmp/curseforge2discord/
 
 RUN \
   gradle
