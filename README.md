@@ -179,13 +179,13 @@ In this instance `PUID=1000` and `PGID=1000`, to find yours use `id user` as bel
 |                                                           TZ | Timezone                                                     |
 |                                                         PUID | for UserID                                                   |
 |                                                         PGID | for GroupID                                                  |
-|                                                   FOOTER_URL | URL to image in Footer of anounce                            |
+|                                                   FOOTER_URL | URL to image in Footer of announce                           |
 |                                           DISCORD_CHANNEL_ID | The ID of the channel you want the bot to post in (from webhook) |
 |                                                   PROJECT_ID | The ID of your CurseForge project                            |
 |                                                      ROLE_ID | (Optional) The ID of the discord role mentioned when the bot makes a post |
 |                                                    FILE_LINK | `DIRECT`-link to file or `CURSE`-link on project page or `NO_LINK`. |
 |                                                  DESCRIPTION | This sets the text that appears as the message description in the update notification |
-|                                             CHANGELOG_FORMAT | `yml` or `md` or `css`. Only choose one syntax. Can be very usefull if project owner/author uses discord MarkDown formatting in their changelog. |
+|                                             CHANGELOG_FORMAT | `yml` or `md` or `css`. Only choose one syntax. Can be very useful if project owner/author uses discord Markdown formatting in their changelog. |
 |                                                WEBHOOK_TOKEN | Your discord-server webhook token                            |
 
 ## License
