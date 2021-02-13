@@ -1,16 +1,11 @@
-FROM bellsoft/liberica-openjdk-alpine:15.0.2-10 AS builder
-
-RUN \
-  apk add --no-cache \
-    git && \
-  git clone \
-    https://github.com/ijo42/CurseForge2Discord.git \
-      /tmp/curseforge2discord
+FROM gradle:jdk15 AS builder
 
 WORKDIR /tmp/curseforge2discord
 
+COPY src/ build.gradle LICENSE /
+
 RUN \
-  ./gradlew
+  gradle
 
 
 FROM lsiobase/alpine:3.11 as release
