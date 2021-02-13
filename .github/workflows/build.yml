@@ -3,6 +3,7 @@ env:
   DOCKER_IMAGE: ${{ github.repository }}
 
 on:
+  workflow_dispatch:
   push:
     paths-ignore:
       - '**.md'
