@@ -49,7 +49,7 @@ services:
       - PROJECT_ID=435552 # The ID of your Curseforge project
       - PGID=1000 # Group ID
       - FOOTER_URL=https://avatars.githubusercontent.com/u/53531892 # Footer Image
-      - FILE_LINK=curse # direct-link to file or curseforge-link on project page or nolink.
+      - FILE_LINK=CURSE # DIRECT-link to file or CURSE-link on project page or NO_LINK.
       - DISCORD_CHANNEL_ID=000000000 # The ID of the channel you want the bot to post in
       - WEBHOOK_TOKEN=InsertHere # Your discord-server webhook
       - DESCRIPTION=New File(s) Detected For CurseForge Project(s) # This sets the text that appears as the message description in the update notification
@@ -68,7 +68,7 @@ docker create \
   -e PUID=1000 `# User ID` \
   -e PROJECT_ID=435552 `# The ID of your Curseforge project` \
   -e PGID=1000 `# Group ID` \
-  -e FILE_LINK=curse `# direct-link to file or curseforge-link on project page or nolink.` \
+  -e FILE_LINK=curse `# DIRECT-link to file or CURSE-link on project page or NO_LINK.` \
   -e DISCORD_CHANNEL_ID=000000000 `# The ID of the channel you want the bot to post in` \
   -e FOOTER_URL=https://avatars.githubusercontent.com/u/53531892 `Footer Image` \
   -e WEBHOOK_TOKEN=InsertHere `# Your discord-server webhook` \
@@ -183,7 +183,7 @@ In this instance `PUID=1000` and `PGID=1000`, to find yours use `id user` as bel
 |                                           DISCORD_CHANNEL_ID | The ID of the channel you want the bot to post in (from webhook) |
 |                                                   PROJECT_ID | The ID of your CurseForge project                            |
 |                                                      ROLE_ID | (Optional) The ID of the discord role mentioned when the bot makes a post |
-|                                                    FILE_LINK | `direct`-link to file or `curse` forge-link on project page or `nolink`. |
+|                                                    FILE_LINK | `DIRECT`-link to file or `CURSE`-link on project page or `NO_LINK`. |
 |                                                  DESCRIPTION | This sets the text that appears as the message description in the update notification |
 |                                             CHANGELOG_FORMAT | `yml` or `md` or `css`. Only choose one syntax. Can be very usefull if project owner/author uses discord MarkDown formatting in their changelog. |
 |                                                WEBHOOK_TOKEN | Your discord-server webhook token                            |

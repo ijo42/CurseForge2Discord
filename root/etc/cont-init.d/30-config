@@ -24,7 +24,7 @@ if [ ! -f /config/bot.conf ]; then
       /config/bot.conf
   fi
   sed -i \
-    "s/FILE_LINK/${FILE_LINK}/g" \
+    "s/FILE_LINK/${FILE_LINK^^}/g" \
     /config/bot.conf
   sed -i \
     "s/DESCRIPTION/${DESCRIPTION}/g" \
