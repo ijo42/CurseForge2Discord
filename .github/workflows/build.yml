@@ -22,14 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2.1.4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
       - name: Docker meta
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v1
@@ -60,8 +52,6 @@ jobs:
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
 
       - name: Create release
         id: create_release
