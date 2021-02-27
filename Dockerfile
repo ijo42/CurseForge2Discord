@@ -4,10 +4,9 @@ WORKDIR /tmp/curseforge2discord
 
 COPY . /tmp/curseforge2discord/
 
-RUN \
-  gradle
+RUN gradle build test
 
-FROM lsiobase/alpine:3.11 as release
+FROM lsiobase/alpine:3.13 as release
 
 LABEL maintainer="ijo42 <admin@ijo42.ru>"
 
@@ -27,7 +26,6 @@ ARG LIBERICA_ARCH=x64
 
 ARG OPT_MODULES="java.base,java.logging"
 ARG OPT_PKGS=""
-SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 RUN \
   for pkg in $OPT_PKGS ; do apk --no-cache add $pkg ; done && \
@@ -53,8 +51,7 @@ RUN \
 ENV JAVA_HOME=${LIBERICA_ROOT} \
 	PATH=${LIBERICA_ROOT}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-RUN \
-  mkdir -p \
+RUN mkdir -p \
     /app/curseforge2discord
 
 COPY --from=builder /tmp/curseforge2discord/build/libs/curseforge2discord.jar /app/curseforge2discord/CurseForge2Discord.jar
