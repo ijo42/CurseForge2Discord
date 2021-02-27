@@ -48,7 +48,11 @@ public class Starter {
                                 }
                             });
                 } catch (CurseException e) {
-                    e.printStackTrace();
+                    if (e.getCause() instanceof SocketTimeoutException) {
+                        System.out.println(e.getMessage());
+                    } else {
+                        e.printStackTrace();
+                    }
                 }
             }
             config.saveCache();
