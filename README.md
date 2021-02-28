@@ -110,7 +110,7 @@ services:
       - CHANGELOG_FORMAT=
 ```
 
-1. Clone the repository: `git clone -b ijo42 https://github.com/Griefed/docker-Curseforge-Bot.git ./cf2d`
+1. Clone the repository: `git clone https://github.com/ijo42/CurseForge2Discord.git ./cf2d`
 1. Prepare `docker-compose.yml` file as seen above
 1. `docker-compose up -d --build cf2d`
 1. ???
@@ -122,10 +122,10 @@ services:
 2. Download [latest binary](https://github.com/ijo42/CurseForge2Discord/releases/latest)
 3. (Optional) Redefine config path:
 
-* By argument `--path /opt/curseforge2discord`
-* By ENV VAR `set CONFIG_PATH=/opt/curseforge2discord`
+* By argument `-path /opt/curseforge2discord`
+* By ENV VAR `CONFIG_PATH=/opt/curseforge2discord`
 
-4. Start: `java -jar build/libs/CurseForge2Discord.jar`
+4. Start: `java -jar CurseForge2Discord.jar`
 
 ### Building and Setup. Gradlew
 
@@ -134,8 +134,8 @@ services:
 3. Build: `gradlew build`
 4. (Optional) Redefine config path:
 
-* By argument `--path /opt/curseforge2discord`
-* By ENV VAR `set CONFIG_PATH=/opt/curseforge2discord`
+* By argument `-path /opt/curseforge2discord`
+* By ENV VAR `CONFIG_PATH=/opt/curseforge2discord`
 
 5. Start: `java -jar build/libs/CurseForge2Discord.jar`
 
