@@ -21,7 +21,7 @@ dependencies {
         transitive = true
     }
     compileOnly 'org.jetbrains:annotations:20.1.0'
-    embed group: 'club.minnced', name: 'discord-webhooks', version: '0.5.4'
+    embed group: 'club.minnced', name: 'discord-webhooks', version: '0.5.6'
     embed group: 'commons-cli', name: 'commons-cli', version: '1.4'
     embed group: 'com.typesafe', name: 'config', version: '1.4.1'
 }
