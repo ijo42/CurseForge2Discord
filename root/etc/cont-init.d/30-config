@@ -14,17 +14,11 @@ if [ ! -f /config/bot.conf ]; then
   sed -i \
     "s/PROJECT_ID/${PROJECT_ID}/g" \
     /config/bot.conf
-  if [ -z "$ROLE_ID" ]; then
-    sed -i \
-      "s/ROLE_ID/000000000/g" \
-      /config/bot.conf
-  else
-    sed -i \
-      "s/ROLE_ID/${ROLE_ID}/g" \
-      /config/bot.conf
-  fi
   sed -i \
-    "s/FILE_LINK/${FILE_LINK}/g" \
+    "s/ROLE_ID/${ROLE_ID:-000000000}/g" \
+    /config/bot.conf
+  sed -i \
+    "s/FILE_LINK/${FILE_LINK:-CURSE}/g" \
     /config/bot.conf
   sed -i \
     "s/DESCRIPTION/${DESCRIPTION}/g" \
