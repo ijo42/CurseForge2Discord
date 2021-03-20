@@ -51,8 +51,8 @@ public class CurseForgeUpdateThread extends TimerTask {
                         proj.name(), starter.cache.get(proj.name()), proj.files().first().id());
             }
             if (config.isNewFile(proj.name(), proj.files().first().id())) {
-                this.embedMessage.sendPingableUpdateNotification(roleId, proj, webhook);
                 this.starter.cache.put(proj.name(), proj.files().first().id());
+                this.embedMessage.sendPingableUpdateNotification(roleId, proj, webhook);
                 this.starter.cacheChanged = true;
             }
         } catch (CurseException exception) {
