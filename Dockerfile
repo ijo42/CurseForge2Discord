@@ -14,7 +14,8 @@ ENV  LANG=en_US.UTF-8 \
      LANGUAGE=en_US:en
 #	 LC_ALL=en_US.UTF-8
 
-ARG LIBERICA_IMAGE_VARIANT=base
+ARG LIBERICA_IMAGE_VARIANT=lite
+#   TODO: work around `base` variant
 
 ARG LIBERICA_JVM_DIR=/usr/lib/jvm
 ARG LIBERICA_ROOT=${LIBERICA_JVM_DIR}/jdk-15
@@ -42,7 +43,7 @@ RUN \
   case $LIBERICA_IMAGE_VARIANT in \
   base) apk add --no-cache binutils && mkdir -pv "${LIBERICA_JVM_DIR}" && "${UNPACKED_ROOT}/bin/jlink" --add-modules ${OPT_MODULES} --no-header-files --no-man-pages --strip-debug --module-path \
     "${UNPACKED_ROOT}"/jmods --vm=server --output "${LIBERICA_ROOT}" && apk del binutils ;; \
-  standard) apk --no-cache add binutils &&  mkdir -pv "${LIBERICA_ROOT}" && find /tmp/java/${LIBERICA_VARIANT}* -maxdepth 1 -mindepth 1 -exec mv -v "{}" "${LIBERICA_ROOT}/" \; ;; \
+  standard) apk --no-cache add binutils && mkdir -pv "${LIBERICA_ROOT}" && find /tmp/java/${LIBERICA_VARIANT}* -maxdepth 1 -mindepth 1 -exec mv -v "{}" "${LIBERICA_ROOT}/" \; ;; \
   *) mkdir -pv "${LIBERICA_ROOT}" && find /tmp/java/${LIBERICA_VARIANT}* -maxdepth 1 -mindepth 1 -exec mv -v "{}" "${LIBERICA_ROOT}/" \; ;; \
   esac && \
   ln -s $LIBERICA_ROOT /usr/lib/jvm/jdk && \
