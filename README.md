@@ -2,12 +2,12 @@
 
 ## Difference from [ErdbeerbaerLP/Curseforge-Bot](https://github.com/ErdbeerbaerLP/Curseforge-Bot)
 
-Fork based on *Minnced* WebHook Discord API instead JDA. Personal thanks [Griefed](https://github.com/Griefed) for a
+Fork based on *Minnced* WebHook Discord API instead JDA. Personal thanks to [Griefed](https://github.com/Griefed) for a
 bunch of useful content
 
 feats:
 
-* This does not require the creation of a separate bot account.
+* This does not require the creation of bot account.
 * A more lightweight library
 * Not use GitHub conf storing
 * A lit bit of Improvements
@@ -15,7 +15,7 @@ feats:
 * [Support](https://discord.gg/4ZYazbM)
 * Built-in S6 Overlay
 
-![](https://amity.is-inside.me/tHBV5Xkj.png)
+![](https://amity.is-inside.me/ZwHLYFXQ.png)
 
 ---
 
@@ -29,7 +29,7 @@ The [lsiobase/alpine](https://hub.docker.com/r/lsiobase/alpine) image is a custo
 |            `master` | Using the `master` tag will pull latest master-branch image for amd64/x86_64 architecture. |
 |               `dev` | Using the `dev` tag will pull latest dev image for amd64/x86_64 architecture. |
 | `sha-([a-z0-9]{7})` | Using this tag will push image based on relevant git-commit `(sha-fbc170f)` |
-|        `\d\.\d\.\d` | Using this tag will push relevant Release `(2.0.1)`          |
+|        `#.#.#`      | Using this tag will push relevant Release `(2.0.1)`          |
 
 ## Pre-built Images
 
